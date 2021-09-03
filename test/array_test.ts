@@ -1,7 +1,6 @@
-import {eq} from '../src/test.ts'
-import * as A from '../src/array.ts'
+import * as T from 'https://deno.land/x/tdd/mod.ts'
+import * as N from '../mod.ts'
 
 Deno.test("array", () => {
-  eq(A.array(3, "x"), ["x","x","x"])
-
+  T.eq(N.array(3, "x"), ["x","x","x"])
 })

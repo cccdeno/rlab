@@ -6,4 +6,3 @@ export * from "./src/op.ts";
 export * as T from "./src/tensor.ts";
 export * from "./src/util.ts";
 export * as V from "./src/vector.ts";
-export * from "./src/test.ts";

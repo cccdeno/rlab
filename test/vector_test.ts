@@ -1,16 +1,16 @@
-import {eq} from '../src/test.ts'
-import * as V from '../src/vector.ts'
+import * as T from 'https://deno.land/x/tdd/mod.ts'
+import { V } from '../mod.ts'
 
 let a = [2,4,6]
 let b = [2,2,2]
 
 Deno.test("vector: binary op", () => {
   // V.add([1,2], "a")
-  eq(V.add(a,b), [4,6,8])
-  eq(V.sub(a,b), [0,2,4])
-  eq(V.mul(a,b), [4,8,12])
-  eq(V.div(a,b), [1,2,3])
-  eq(V.dot(a,b), 24)
+  T.eq(V.add(a,b), [4,6,8])
+  T.eq(V.sub(a,b), [0,2,4])
+  T.eq(V.mul(a,b), [4,8,12])
+  T.eq(V.div(a,b), [1,2,3])
+  T.eq(V.dot(a,b), 24)
 })
 
 /*
