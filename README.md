@@ -5,22 +5,21 @@
 File: matrix1.ts
 
 ```js
-import { M } from '../mod.ts'
+import { M } from 'https://deno.land/x/num/mod.ts'
 
 let a = [[1,2],[3,4]]
 let at = M.transpose(a)
 
 console.log('a=', a)
 console.log('at=', at)
-console.log('dot(a, at)=', M.dot(a, at))
+console.log('M.dot(a, at)=', M.dot(a, at))
 ```
 
 ## run
 
 ```
 $ deno run matrix1.ts
-Check file:///C:/ccc/course/sa/js/package/num/example/matrix1.ts
 a= [ [ 1, 2 ], [ 3, 4 ] ]
 at= [ [ 1, 3 ], [ 2, 4 ] ]
-dot(a, at)= [ [ 5, 11 ], [ 11, 25 ] ]
+M.dot(a, at)= [ [ 5, 11 ], [ 11, 25 ] 
 ```
