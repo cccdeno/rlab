@@ -1,4 +1,4 @@
-import { M } from 'https://deno.land/x/num/mod.ts'
+import { M } from 'https://deno.land/x/math6/mod.ts'
 
 let a = [[1,2],[3,4]]
 let at = M.transpose(a)
