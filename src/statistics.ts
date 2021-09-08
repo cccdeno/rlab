@@ -1,8 +1,8 @@
+import * as V from './vector.ts'
+
 const EPSILON = 0.00000001
 
-V.hist = function (a, from = Math.floor(V.min(a)), to=Math.ceil(V.max(a)), step = 1) {
-  // from = (from==null) ?  : from
-  // to   = (to==null) ?  : to
+export function hist(a, from = Math.floor(V.min(a)), to=Math.ceil(V.max(a)), step = 1) {
   var n = Math.ceil((to - from + EPSILON) / step)
   var xc = V.range(from + step / 2.0, to, step)
   var bins = V.array(n, 0)

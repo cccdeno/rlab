@@ -1,4 +1,4 @@
-# num -- A Package like numpy for Deno
+# math6 -- A Deno Package for Math
 
 ## example
 

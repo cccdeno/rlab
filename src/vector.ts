@@ -1,4 +1,4 @@
-import * as U from './util.ts'
+import * as R from './random.ts'
 
 export function vector(n:number, value:number=0) {
   let a = new Array(n)
@@ -13,18 +13,6 @@ export function near(a:number[], b:number[], delta=0.001) {
   }
   return true
 }
-
-export function range(begin:number, end:number, step:number=1) {
-  let len = Math.floor((end-begin)/step)
-  let a = new Array(len)
-  let i = 0
-  for (let t=begin; t<end; t+=step) {
-    a[i++] = t
-  }
-  return a
-}
-
-export let steps = range
 
 export function op2(op:string) { // 這個函數強調速度，所以會比較長 ...
   let text = `
@@ -196,8 +184,6 @@ export var norminf = function (a:number[]) {
   return r
 }
 
-// norminf: ['accum = max(accum,abs(xi));','var accum = 0, max = Math.max, abs = Math.abs;'],
-
 export var mean = function(a:number[]) {
   return sum(a)/a.length
 }
@@ -209,27 +195,13 @@ export var sd = function (a:number[]) {
   return Math.sqrt(sum(d2)/(a.length-1))
 }
 
-// V.range = uu6.range
-// V.steps = uu6.steps
-
 export var random = function (r:number[], min:number=0, max:number=1) {
   let len = r.length
   for (let i=0; i<len; i++) {
-    r[i] = U.random(min, max)
+    r[i] = R.random(min, max)
   }
 }
 
-/*
-export var assign = function (r:number[], o) {
-  let isC = (typeof o === 'number')
-  if (!isC) uu6.be(r.length === o.length)
-  let len = r.length
-  for (let i=0; i<len; i++) {
-    r[i] = isC ? o : o[i]
-  }
-  return r
-}
-*/
 export var normalize = function (r:number[]) {
   let ar = abs(r)
   let s = sum(ar) // 不能用 sum，sum 只適用於機率。
@@ -249,78 +221,3 @@ export var normalize2 = function (r:number[]) {
   }
   return r
 }
-
-/*
-
-
-export function dot(a:number[], b:number[]) {
-  let sum = 0
-  let len = a.length
-  for (var i = 0; i < len; i++) {
-    sum += a[i] * b[i] // 速度較快
-  }
-  return sum
-}
-
-export function add(a:number[], b:number[]) {
-  let len = a.length
-  let r = new Array(len)
-  for (var i = 0; i < len; i++) {
-    r[i] = a[i] + b[i]
-  }
-  return r
-}
-
-export function sub(a:number[], b:number[]) {
-  let len = a.length
-  let r = new Array(len)
-  for (var i = 0; i < len; i++) {
-    r[i] = a[i] - b[i]
-  }
-  return r
-}
-
-export function mul(a:number[], b:number[]) {
-  let len = a.length
-  let r = new Array(len)
-  for (var i = 0; i < len; i++) {
-    r[i] = a[i] * b[i]
-  }
-  return r
-}
-
-export function div(a:number[], b:number[]) {
-  let len = a.length
-  let r = new Array(len)
-  for (var i = 0; i < len; i++) {
-    r[i] = a[i] / b[i]
-  }
-  return r
-}
-
-export function addc(a:number[], c:number) {
-  let len = a.length
-  let r = new Array(len)
-  for (var i = 0; i < len; i++) {
-    r[i] = a[i] + c
-  }
-  return r
-}
-
-export function subc(a:number[], c:number) {
-  return addc(a, -c)
-}
-
-export function mulc(a:number[], c:number) {
-  let len = a.length
-  let r = new Array(len)
-  for (var i = 0; i < len; i++) {
-    r[i] = a[i] * c
-  }
-  return r
-}
-
-export function divc(a:number[], c:number) {
-  return mulc(a, 1/c)
-}
-*/

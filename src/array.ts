@@ -31,12 +31,4 @@ export function enqueue(a:any[], o:any) {
 export function dequeue(a:any[]) {
   return a.unshift()
 }
-/*
-export function amap2(a:any[], b:any[], f:(x:any, y:any)=>any) {
-  let len = a.length, c = new Array(len)
-  for (let i=0; i<len; i++) {
-    c[i] = f(a[i], b[i])
-  }
-  return c
-}
-*/
+

@@ -1,8 +1,14 @@
-export * from "./src/array.ts";
-export * from "./src/complex.ts";
-export * as M from "./src/matrix.ts";
-export * from "./src/op.ts";
-// export * from "./src/statistics.ts";
-export * as T from "./src/tensor.ts";
-export * from "./src/util.ts";
-export * as V from "./src/vector.ts";
+export * from "./src/util.ts"
+export * from "./src/random.ts"
+export * from "./src/array.ts"
+export * from "./src/complex.ts"
+export * from "./src/fourier.js"
+export * from "./src/calculus.js"
+export * from "./src/op.ts"
+export * from "./src/probfunc.ts"
+export * from "./src/probability.js"
+export * as V from "./src/vector.ts"
+export * as M from "./src/matrix.ts"
+export * as R from "./src/R.js"
+// export * from "./src/statistics.ts"
+// export * as T from "./src/tensor.ts"
