@@ -1,5 +1,10 @@
 # math6 -- A Deno Package for Math
 
+The source code of math6 derived from the following project
+
+1. jstat -- https://github.com/jstat/jstat
+2. numeric -- https://github.com/sloisel/numeric
+
 ## example
 
 File: matrix1.ts
