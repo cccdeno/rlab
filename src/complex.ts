@@ -43,7 +43,6 @@ export class Complex {
 export function parseComplex(s: string) {
   try {
     var m = s.match(/^([^\+]*)(\+([\d\.]*)i)?$/)
-    console.log('m=', m)
     var a = parseFloat(m![1])
     var b = typeof m![3] === 'undefined' ? 0 : parseFloat(m![3])
     return new Complex(a, b)
@@ -54,7 +53,6 @@ export function parseComplex(s: string) {
 
 export function parseComplexList(s: string) {
   let items = s.split(",")
-  console.log('items=', items)
   let list = []
   for (let item of items) {
     list.push(parseComplex(item))

@@ -41,24 +41,24 @@ export function op2(op:string) { // 這個函數強調速度，所以會比較�
   return new Function('a', 'b', text)
 }
 
-export var add = op2('ai+bi')
-export var sub = op2('ai-bi')
-export var mul = op2('ai*bi')
-export var div = op2('ai/bi')
-export var mod = op2('ai%bi')
-export var pow = op2('Math.pow(ai,bi)')
-export var and = op2('ai&&bi')
-export var or  = op2('ai||bi')
-export var xor = op2('(ai || bi) && !(ai && bi)')
-export var band= op2('ai&bi')
-export var bor = op2('ai|bi')
-export var bxor= op2('ai^bi')
-export var eq  = op2('ai==bi')
-export var neq = op2('ai!=bi')
-export var lt  = op2('ai<bi')
-export var gt  = op2('ai>bi')
-export var leq = op2('ai<=bi')
-export var geq = op2('ai>=bi')
+export const add = op2('ai+bi')
+export const sub = op2('ai-bi')
+export const mul = op2('ai*bi')
+export const div = op2('ai/bi')
+export const mod = op2('ai%bi')
+export const pow = op2('Math.pow(ai,bi)')
+export const and = op2('ai&&bi')
+export const or  = op2('ai||bi')
+export const xor = op2('(ai || bi) && !(ai && bi)')
+export const band= op2('ai&bi')
+export const bor = op2('ai|bi')
+export const bxor= op2('ai^bi')
+export const eq  = op2('ai==bi')
+export const neq = op2('ai!=bi')
+export const lt  = op2('ai<bi')
+export const gt  = op2('ai>bi')
+export const leq = op2('ai<=bi')
+export const geq = op2('ai>=bi')
 
 // Uniary Operation
 export function op1(op:string) {
@@ -77,41 +77,41 @@ export function op1(op:string) {
   return new Function('a', text)
 }
 
-export var neg = op1('-ai')
-export var abs = op1('Math.abs(ai)')
-export var log = op1('Math.log(ai)')
-export var not = op1('!ai')
-export var sin = op1('Math.sin(ai)')
-export var cos = op1('Math.cos(ai)')
-export var tan = op1('Math.tan(ai)')
-export var cot = op1('Math.cot(ai)')
-export var sec = op1('Math.sec(ai)')
-export var csc = op1('Math.csc(ai)')
-export var asin= op1('Math.asin(ai)')
-export var acos= op1('Math.acos(ai)')
-export var atan= op1('Math.atan(ai)')
-export var atan2=op1('Math.atan2(ai)')
-export var atanh=op1('Math.atanh(ai)')
-export var cbrt= op1('Math.cbrt(ai)')
-export var ceil= op1('Math.ceil(ai)')
-export var clz32=op1('Math.clz32(ai)')
-export var cosh= op1('Math.cosh(ai)')
-export var exp = op1('Math.exp(ai)')
-export var expm1= op1('Math.expm1(ai)')
-export var floor= op1('Math.floor(ai)')
-export var fround= op1('Math.fround(ai)')
-export var hypot= op1('Math.hypot(ai)')
-export var imul= op1('Math.imul(ai)')
-export var log10= op1('Math.log10(ai)')
-export var log1p= op1('Math.log1p(ai)')
-export var log2= op1('Math.log2(ai)')
-export var round= op1('Math.round(ai)')
-export var sign= op1('Math.sign(ai)')
-export var sqrt= op1('Math.sqrt(ai)')
-export var trunc= op1('Math.trunc(ai)')
+export const neg = op1('-ai')
+export const abs = op1('Math.abs(ai)')
+export const log = op1('Math.log(ai)')
+export const not = op1('!ai')
+export const sin = op1('Math.sin(ai)')
+export const cos = op1('Math.cos(ai)')
+export const tan = op1('Math.tan(ai)')
+export const cot = op1('Math.cot(ai)')
+export const sec = op1('Math.sec(ai)')
+export const csc = op1('Math.csc(ai)')
+export const asin= op1('Math.asin(ai)')
+export const acos= op1('Math.acos(ai)')
+export const atan= op1('Math.atan(ai)')
+export const atan2=op1('Math.atan2(ai)')
+export const atanh=op1('Math.atanh(ai)')
+export const cbrt= op1('Math.cbrt(ai)')
+export const ceil= op1('Math.ceil(ai)')
+export const clz32=op1('Math.clz32(ai)')
+export const cosh= op1('Math.cosh(ai)')
+export const exp = op1('Math.exp(ai)')
+export const expm1= op1('Math.expm1(ai)')
+export const floor= op1('Math.floor(ai)')
+export const fround= op1('Math.fround(ai)')
+export const hypot= op1('Math.hypot(ai)')
+export const imul= op1('Math.imul(ai)')
+export const log10= op1('Math.log10(ai)')
+export const log1p= op1('Math.log1p(ai)')
+export const log2= op1('Math.log2(ai)')
+export const round= op1('Math.round(ai)')
+export const sign= op1('Math.sign(ai)')
+export const sqrt= op1('Math.sqrt(ai)')
+export const trunc= op1('Math.trunc(ai)')
 
 // 累積性運算
-export var dot = function (a:number[],b:number[]) {
+export const dot = function (a:number[],b:number[]) {
   let len = a.length
   let r = 0
   for (let i=0; i<len; i++) {
@@ -120,7 +120,7 @@ export var dot = function (a:number[],b:number[]) {
   return r
 }
 
-export var min = function (a:number[]) {
+export const min = function (a:number[]) {
   let len = a.length, r = a[0]
   for (let i=1; i<len; i++) {
     if (a[i] < r) r = a[i]
@@ -128,7 +128,7 @@ export var min = function (a:number[]) {
   return r
 }
 
-export var max = function (a:number[]) {
+export const max = function (a:number[]) {
   let len = a.length, r = a[0]
   for (let i=1; i<len; i++) {
     if (a[i] > r) r = a[i]
@@ -136,7 +136,7 @@ export var max = function (a:number[]) {
   return r
 }
 
-export var any = function (a:number[]) {
+export const any = function (a:number[]) {
   let len = a.length
   for (let i=0; i<len; i++) {
     if (a[i]) return true
@@ -144,7 +144,7 @@ export var any = function (a:number[]) {
   return false
 }
 
-export var all = function (a:number[]) {
+export const all = function (a:number[]) {
   let len = a.length
   for (let i=0; i<len; i++) {
     if (!a[i]) return false
@@ -152,7 +152,7 @@ export var all = function (a:number[]) {
   return true
 }
 
-export var sum = function(a:number[]) {
+export const sum = function(a:number[]) {
   let len = a.length
   let r = 0
   for (let i=0; i<len; i++) {
@@ -161,7 +161,7 @@ export var sum = function(a:number[]) {
   return r
 }
 
-export var product = function(a:number[]) {
+export const product = function(a:number[]) {
   let len = a.length
   let r = 1
   for (let i=0; i<len; i++) {
@@ -170,12 +170,12 @@ export var product = function(a:number[]) {
   return r
 }
 
-export var norm = function (a:number[]) {
+export const norm = function (a:number[]) {
   let a2 = pow(a, 2)
   return Math.sqrt(sum(a2))
 }
 
-export var norminf = function (a:number[]) {
+export const norminf = function (a:number[]) {
   let len = a.length
   let r = 0
   for (let i=0; i<len; i++) {
@@ -184,25 +184,25 @@ export var norminf = function (a:number[]) {
   return r
 }
 
-export var mean = function(a:number[]) {
+export const mean = function(a:number[]) {
   return sum(a)/a.length
 }
 
-export var sd = function (a:number[]) {
+export const sd = function (a:number[]) {
   let m = mean(a)
   let diff = sub(a, m)
   let d2 = pow(diff, 2)
   return Math.sqrt(sum(d2)/(a.length-1))
 }
 
-export var random = function (r:number[], min:number=0, max:number=1) {
+export const random = function (r:number[], min:number=0, max:number=1) {
   let len = r.length
   for (let i=0; i<len; i++) {
     r[i] = R.random(min, max)
   }
 }
 
-export var normalize = function (r:number[]) {
+export const normalize = function (r:number[]) {
   let ar = abs(r)
   let s = sum(ar) // 不能用 sum，sum 只適用於機率。
   let len = r.length
@@ -212,7 +212,7 @@ export var normalize = function (r:number[]) {
   return r
 }
 
-export var normalize2 = function (r:number[]) {
+export const normalize2 = function (r:number[]) {
   let norm2 = norm(r)
   if (norm2 === 0) return r
   let len = r.length

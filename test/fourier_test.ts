@@ -1,5 +1,5 @@
 import * as T from 'https://deno.land/x/tdd/mod.ts'
-import { DFT, iDFT, parseComplexList, V } from '../mod.ts'
+import { DFT, iDFT, parseComplexList } from '../mod.ts'
 
 Deno.test("fourier", () => {
     var f = parseComplexList('1+2i,2+1i,1+2i,2+1i')
