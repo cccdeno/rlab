@@ -1,6 +1,7 @@
 import * as U from './util.ts'
 import * as V from './vector.ts'
 import * as P from './probfunc.ts'
+const {int} = U
 
 const { log, pow, sqrt, PI, tan, atan, min } = Math
 
@@ -366,6 +367,7 @@ export class Weibull extends Distribution {
 export class Binomial extends Distribution {
     pdf(arg:{ x:number, p:number, n:number }) {
         let { x:k, p, n } = arg
+        U.be(int(k))
         return (p === 0 || p === 1) ?
             ((n * p) === k ? 1 : 0) :
             P.combination(n, k) * pow(p, k) * pow(1 - p, n - k)
@@ -388,6 +390,7 @@ export class Binomial extends Distribution {
 export class NegBinomial extends Distribution {
     pdf(arg:{ x:number, p:number, r:number }) {
         let { x:k, p, r } = arg
+        U.be(int(k))
         if (k !== k >>> 0) throw Error()
         if (k < 0) return 0
         return P.combination(k + r - 1, r - 1) * pow(1 - p, k) * pow(p, r);
@@ -405,8 +408,8 @@ export class NegBinomial extends Distribution {
 
 export class Poisson extends Distribution {
     pdf(arg:{ x:number, l:number }) {
-        let { x, l } = arg
-        let k = x
+        let { x:k, l } = arg
+        U.be(int(k))
         if (l < 0 || (k % 1) !== 0 || k < 0) return 0
         return pow(l, k) * Math.exp(-l) / P.factorial(k)
     }

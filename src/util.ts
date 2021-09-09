@@ -30,6 +30,10 @@ export function clone(o:any) {
   return r
 }
 
+export function int(x:number):boolean {
+  return Number.isInteger(x)
+}
+
 export function be(cond:boolean, ...args:any) {
   if (!cond) {
     throw Error(args.toString())
