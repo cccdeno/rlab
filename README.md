@@ -1,11 +1,11 @@
 # math6 -- A Deno Package for Math
 
-The source code of math6 derived from the following project
+The source code of math6 derived from the following projects
 
 1. jstat -- https://github.com/jstat/jstat
 2. numeric -- https://github.com/sloisel/numeric
 
-## example
+## Example
 
 File: matrix1.ts
 
@@ -20,7 +20,7 @@ console.log('at=', at)
 console.log('M.dot(a, at)=', M.dot(a, at))
 ```
 
-## run
+## Run
 
 ```
 $ deno run matrix1.ts
