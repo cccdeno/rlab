@@ -1,4 +1,4 @@
-# math6 -- A Deno Package for Math
+# rlab -- A TypeScript Package for Math like R
 
 The source code of math6 derived from the following projects
 
