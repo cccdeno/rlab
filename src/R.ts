@@ -1,4 +1,15 @@
+import * as U from './util.ts'
+import * as A from './array.ts'
+import * as V from './vector.ts'
 import * as P from './probability.ts'
+
+export function samples(a: any[], n: number) {
+  let s = new Array(n)
+  for (let i = 0; i < n; i++) {
+    s[i] = U.randomChoose(a)
+  }
+  return s
+}
 
 function rsamples(distribution:string) {
   return eval(`
@@ -17,9 +28,9 @@ export const qunif = (arg:{p:number,min:number,max:number}) => P.uniform.inv(arg
 export const runif = rsamples('uniform')
 
 // Exponential Distribution
-export const dexp = (arg:{x:number, rate:number}) => P.exp.pdf(arg)
-export const pexp = (arg:{x:number, rate:number}) => P.exp.cdf(arg)
-export const qexp = (arg:{p:number, rate:number}) => P.exp.inv(arg)
+export const dexp = (arg:{x:number, rate:number}) => P.exponential.pdf(arg)
+export const pexp = (arg:{x:number, rate:number}) => P.exponential.cdf(arg)
+export const qexp = (arg:{p:number, rate:number}) => P.exponential.inv(arg)
 export const rexp = rsamples('exp')
 
 // Normal Distribution
@@ -76,3 +87,19 @@ export const pweibull = (arg:object) => P.weibull.cdf(arg)
 export const qweibull = (arg:object) => P.weibull.inv(arg)
 export const rweibull = rsamples('weibull')
 */
+
+const EPSILON = 0.00000001
+
+export function hist(a:number[], from:number = Math.floor(V.min(a)), to:number=Math.ceil(V.max(a)), step:number = 1) {
+  var n = Math.ceil((to - from + EPSILON) / step)
+  var xc = U.range(from + step / 2.0, to, step)
+  var bins = A.array(n, 0)
+  let len = a.length
+  for (let i=0; i<len; i++) {
+    var slot = Math.floor((a[i] - from) / step)
+    if (slot >= 0 && slot < n) {
+      bins[slot]++
+    }
+  }
+  return {type: 'histogram', xc: xc, bins: bins, from: from, to: to, step: step}
+}

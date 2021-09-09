@@ -1,10 +1,6 @@
 import * as U from './util.ts'
 import * as V from './vector.ts'
 
-export function clone(m: number[][]) {
-  return JSON.parse(JSON.stringify(m))
-}
-
 export function matrix(rows: number, cols: number) {
   let r = new Array(rows)
   for (let i = 0; i < rows; i++) {
@@ -68,7 +64,7 @@ export function dot(a: number[][], b: number[][]) {
 
 export function inv(m0: number[][]) {
   let m = m0.length, n = m0[0].length, abs = Math.abs
-  let A = clone(m0), Ai, Aj
+  let A = U.clone(m0), Ai, Aj
   let I = identity(m), Ii, Ij
   let i, j, k, x, i0, v0
   for (j = 0; j < n; ++j) {
@@ -100,7 +96,7 @@ export function inv(m0: number[][]) {
 export function det(x: number[][]) {
   let abs = Math.abs
   if (x.length !== x[0].length) { throw new Error('numeric: det() only works on square matrices') }
-  let n = x.length, ret = 1, i, j, k, A = clone(x), Aj, Ai, alpha, temp, k1
+  let n = x.length, ret = 1, i, j, k, A = U.clone(x), Aj, Ai, alpha, temp, k1
   for (j = 0; j < n - 1; j++) {
     k = j
     for (i = j + 1; i < n; i++) { if (abs(A[i][j]) > abs(A[k][j])) { k = i } }
@@ -132,7 +128,7 @@ export function lu(A: number[][]) {
   var max
   var n = A.length, n1 = n - 1
   var P = new Array(n)
-  A = clone(A)
+  A = U.clone(A)
 
   for (k = 0; k < n; ++k) {
     Pk = k
@@ -225,7 +221,7 @@ export function svd(A: number[][]) {
   var k = 0;
   var l = 0;
 
-  var u = clone(A);
+  var u = U.clone(A);
   var m = u.length;
 
   var n = u[0].length;

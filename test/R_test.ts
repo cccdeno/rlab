@@ -1,5 +1,5 @@
 import * as T from 'https://deno.land/x/tdd/mod.ts'
-import { R } from '../mod.ts'
+import * as R from '../mod.ts'
 
 Deno.test("Uniform Distribution", () => {
     T.near(R.dunif({ x: 1, min: 0, max: 4 }), 0.25)

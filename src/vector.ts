@@ -1,11 +1,11 @@
-import * as R from './random.ts'
+import * as U from './util.ts'
 
-export function vector(n:number, value:number=0) {
+export function vector(n:number, value:number=0):number[] {
   let a = new Array(n)
   return a.fill(value)
 }
 
-export function near(a:number[], b:number[], delta=0.001) {
+export function near(a:number[], b:number[], delta=0.001):boolean {
   if (a.length != b.length) return false
   let len = a.length
   for (var i = 0; i < len; i++) {
@@ -198,7 +198,7 @@ export const sd = function (a:number[]) {
 export const random = function (r:number[], min:number=0, max:number=1) {
   let len = r.length
   for (let i=0; i<len; i++) {
-    r[i] = R.random(min, max)
+    r[i] = U.random(min, max)
   }
 }
 

@@ -25,9 +25,8 @@ export function integral(f: (x:number)=>number, a:number, b:number, h:number = s
     return area
 }
 
-/*
 // n 階偏導數
-export function pdiffn(f: (v: number[]) => number, i: number, n: number, v: number[], h: number = step) {
+export function pdiffn(f: (v: number[]) => number, i: number, n: number, v: number[], h: number = step):number {
     if (n === 0) return f(v)
     h = h / 2 // 讓 1, 2, .... n 次微分的最大距離都一樣
     let v1 = v.slice(0); v1[i] += h
@@ -35,7 +34,7 @@ export function pdiffn(f: (v: number[]) => number, i: number, n: number, v: numb
     return (pdiffn(f, i, n - 1, v1) - pdiffn(f, i, n - 1, v_1)) / (2 * h)
 }
 
-export function pdiff(f: (v: number[]) => number, i: number, v: number[], h: number = step) {
+export function pdiff(f: (v: number[]) => number, i: number, v: number[], h: number = step):number {
     return pdiffn(f, i, 1, v, h)
 }
 
@@ -51,7 +50,7 @@ export function grad(f: (v: number[]) => number, v: number[], h: number = step) 
 
 // 散度 divergence : div(fv,x) = sum(pdiff(fv[i],v,i))
 // 說明： fv=[f1,f2,...,fn] 可微分向量函數
-export function divergence(fv: (v: number[]) => number, v: number[]) {
+export function divergence(fv: ((v: number[]) => number)[], v: number[]) {
     // console.log('div:fv=', fv)
     let len = v.length, d = new Array(len)
     for (var i = 0; i < len; i++) {
@@ -67,9 +66,9 @@ export function is3D(fv: ((v: number[]) => number)[], v: number[]) {
 }
 
 // 旋度 curl : curl(fv, x) = [pf32-pf23,pf13-pf31,pf21-pf12]
-export function curl(fv: ((v: number[]) => number)[], v: number[]) {
+export function curl(fv: ((v: number[]) => number)[], v: number[]):number[] {
     is3D(fv, v);
-    let pf = (i,j,v)=>pdiff(fv[i], j, v)
+    let pf = (i:number,j:number,v:number[])=>pdiff(fv[i], j, v)
     return [
         pf(2, 1, v) - pf(1, 2, v),
         pf(0, 2, v) - pf(2, 0, v),
@@ -86,9 +85,9 @@ export function laplaceOperator(f:(v: number[]) => number, v: number[]) {
     return V.sum(df2)
 }
 
-export function jocobian(fv, v: number[]) {
+export function jocobian(fv: ((v: number[]) => number)[], v: number[]) {
     let len = fv.length
-    let J = M.new(len, len)
+    let J = M.matrix(len, len)
     for (let i = 0; i < len; i++) {
         for (let j = 0; j < len; j++) {
             J[i][j] = pdiff(fv[i], j, v)
@@ -98,12 +97,12 @@ export function jocobian(fv, v: number[]) {
 }
 
 // ============================ 積分 ================================
-
+/*
 // 線積分： int F●dr = int F(r(t))●r'(t) dt
 export function vintegral(F: (x:number[])=>number[], r:(t:number)=>number[], a: number, b: number, dt: number = step) {
     var sum = 0
     for (var t = a; t < b; t += dt) {
-        sum += V.dot(F(r(t)) * diff(r, t, dt))
+        sum += V.dot(F(r(t)), pdiff(r(t), dt)) // 這裡有問題
     }
     return sum
 }
@@ -112,14 +111,14 @@ export function vintegral(F: (x:number[])=>number[], r:(t:number)=>number[], a: 
 // f=[f1,f2,....] , a=[a1,a2,...] , b=[b1,b2,....]
 export function pintegral(f:(x:number[])=>number, a: number[], b: number[]) {
 }
-
+*/
 // ============================== 定理 ==============================
 
 // 定理: 梯度的散度 = 拉普拉斯算子
 // 注意：這裡用數值微分只取到一階，無法反映《引力場的拉普拉斯應該為 0》 的特性。若用自動微分應該就會是 0。
 export function theoremDivGradEqLaplace(f:(x:number[])=>number, v: number[]) {
     let len = v.length
-    let divGrad = divergence(grad(f, len), v)
+    let divGrad = divergence(grad(f, v), v)
     let laplace = laplaceOperator(f, v)
     console.log('div(grad(f,v))=', divGrad, ' laplace=', laplace)
     U.near(divGrad, laplace)
@@ -128,17 +127,16 @@ export function theoremDivGradEqLaplace(f:(x:number[])=>number, v: number[]) {
 // 定理：梯度的旋度 = 零
 export function theoremCurlGradZero(f:(x:number[])=>number, v: number[]) {
     let len = v.length
-    let r = curl(grad(f, len), v)
+    let r = curl(grad(f, v), v)
     console.log('curl(grad(f,v))=', r)
-    U.near(r, V.array(len, 0))
+    V.near(r, V.vector(len, 0))
 }
-
+/*
 // 定理：旋度的散度 = 零
-export function theoremDivCurlZero(f:(x:number[])=>number, v: number[]) {
+export function theoremDivCurlZero(f:((v:number[])=>number)[], v: number[]) {
     let len = v.length
-    let r = divergence(curl(f, len), v)
+    let r = divergence(curl(f, v), v)
     console.log('div(curl(f,v))=', r)
-    U.near(r, V.array(len, 0))
+    V.near(r, V.vector(len, 0))
 }
-
 */

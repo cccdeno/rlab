@@ -133,10 +133,9 @@ export function permutation(n: number, m: number) {
 }
 
 // beta function
-export function betafn(x: number, y: number) {
+export function betafn(x: number, y: number):number {
     // ensure arguments are positive
-    if (x <= 0 || y <= 0)
-        return undefined;
+    if (x <= 0 || y <= 0) throw Error(`betafn: should be (x>0,y>0), but x=${x} y=${y}`) // return undefined;
     // make sure x + y doesn't exceed the upper limit of usable values
     return (x + y > 170)
         ? Math.exp(betaln(x, y))

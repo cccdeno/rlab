@@ -1,6 +1,5 @@
-import * as OP from './op.ts'
 import * as V from './vector.ts'
-import { be } from './util.ts'
+import * as U from './util.ts'
 
 function op1(t1:Tensor, op:string) {
   let V1 = V as {[index: string]:any}
@@ -16,14 +15,14 @@ function op1n(t1:Tensor, op:string) {
 
 function op2(t1:Tensor, op:string, t2:Tensor) {
   let V2 = V as {[index: string]:any}
-  be(V.eq(t1.shape, t2.shape))
+  U.be(V.eq(t1.shape, t2.shape))
   let rv = V2[op](t1.v, t2.v)
   return new Tensor(t1.shape, rv)  
 }
 
 function op2n(t1:Tensor, op:string, t2:Tensor) {
   let V2 = V as {[index: string]:any}
-  be(V.eq(t1.shape, t2.shape))
+  U.be(V.eq(t1.shape, t2.shape))
   let r = V2[op](t1.v, t2.v)
   return r
 }
@@ -40,11 +39,11 @@ export class Tensor {
   dim() { return this.shape.length }
 
   map1(f:(a:any)=>any) {
-    return new Tensor(this.shape, OP.map1(this.v, f))
+    return new Tensor(this.shape, U.map1(this.v, f))
   }
 
   map2(t2: Tensor, f:(a:any,b:any)=>any) {
-    return new Tensor(this.shape, OP.map2(this.v, t2.v, f))
+    return new Tensor(this.shape, U.map2(this.v, t2.v, f))
   }
 
   // vector = this.op(t2)
