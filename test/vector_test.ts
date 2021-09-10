@@ -1,5 +1,6 @@
 import * as T from 'https://deno.land/x/tdd/mod.ts'
-import { V } from '../mod.ts'
+import * as R from '../mod.ts'
+const { V } = R
 
 let a = [2,4,6]
 let b = [2,2,2]

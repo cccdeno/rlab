@@ -1,5 +1,6 @@
 import * as T from 'https://deno.land/x/tdd/mod.ts'
-import { V, M } from '../mod.ts'
+import * as R from '../mod.ts'
+const { M, V } = R
 
 let a = [[1,2],[3,4]]
 var at:number[][]
