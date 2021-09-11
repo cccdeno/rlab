@@ -30,3 +30,9 @@ a= [ [ 1, 2 ], [ 3, 4 ] ]
 at= [ [ 1, 3 ], [ 2, 4 ] ]
 M.dot(a, at)= [ [ 5, 11 ], [ 11, 25 ] ]
 ```
+
+## test
+
+```
+$ deno test --importmap globalmap.json test 
+```

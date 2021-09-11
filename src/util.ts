@@ -2,14 +2,6 @@ export const Pi = Math.PI
 export const E = Math.E
 export const Epsilon = 2.220446049250313e-16
 
-export function arg(map:{[key: string]: any}) {
-  var list = []
-  for (var key in map) {
-      list.push(map[key])
-  }
-  return list
-}
-
 export function range(begin:number, end:number, step:number=1) {
   let len = Math.floor((end-begin)/step)
   let a = new Array(len)

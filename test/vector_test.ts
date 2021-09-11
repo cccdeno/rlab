@@ -1,4 +1,4 @@
-import * as T from 'https://deno.land/x/tdd/mod.ts'
+import * as T from '/tdd/mod.ts'
 import * as R from '../mod.ts'
 const { V } = R
 

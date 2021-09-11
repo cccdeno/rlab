@@ -5,7 +5,7 @@ function range1(begin, end, step = 1) {
     let len = Math.floor((end - begin) / step);
     let a = new Array(len);
     let i = 0;
-    for(let t = begin; t < end; t += step){
+    for(let t = begin; t <= end; t += step){
         a[i++] = t;
     }
     return a;
@@ -279,6 +279,22 @@ function op2(op) {
     return new Function('a', 'b', text);
 }
 const mod1 = op2('ai%bi');
+function op1(op) {
+    let text = `
+  var ai
+  let aA = Array.isArray(a)
+  if (!aA) { ai=a; return ${op} }
+  let len = a.length
+  let c = new Array(len)
+  for (let i=0; i<len; i++) {
+    ai=a[i]
+    c[i] = ${op}
+  }
+  return c
+  `;
+    return new Function('a', text);
+}
+const abs2 = op1('Math.abs(ai)');
 const dot = function(a5, b5) {
     let len = a5.length;
     let r = 0;
@@ -287,14 +303,14 @@ const dot = function(a5, b5) {
     }
     return r;
 };
-const min = function(a5) {
+const min2 = function(a5) {
     let len = a5.length, r = a5[0];
     for(let i1 = 1; i1 < len; i1++){
         if (a5[i1] < r) r = a5[i1];
     }
     return r;
 };
-const max = function(a5) {
+const max1 = function(a5) {
     let len = a5.length, r = a5[0];
     for(let i1 = 1; i1 < len; i1++){
         if (a5[i1] > r) r = a5[i1];
@@ -306,6 +322,15 @@ const sum = function(a5) {
     let r = 0;
     for(let i1 = 0; i1 < len; i1++){
         r += a5[i1];
+    }
+    return r;
+};
+const normalize = function(r) {
+    let ar = abs2(r);
+    let s = sum(ar);
+    let len = r.length;
+    for(let i1 = 0; i1 < len; i1++){
+        r[i1] = s == 0 ? 0 : r[i1] / s;
     }
     return r;
 };
@@ -363,7 +388,7 @@ function dot1(a5, b5) {
     return r;
 }
 function inv(m0) {
-    let m = m0.length, n = m0[0].length, abs = Math.abs;
+    let m = m0.length, n = m0[0].length, abs1 = Math.abs;
     let A = clone1(m0), Ai, Aj;
     let I = identity(m), Ii, Ij;
     let i1, j, k, x, i0, v0;
@@ -371,7 +396,7 @@ function inv(m0) {
         i0 = -1;
         v0 = -1;
         for(i1 = j; i1 !== m; ++i1){
-            k = abs(A[i1][j]);
+            k = abs1(A[i1][j]);
             if (k > v0) {
                 i0 = i1;
                 v0 = k;
@@ -404,7 +429,7 @@ function inv(m0) {
     return I;
 }
 function det(x) {
-    let abs = Math.abs;
+    let abs1 = Math.abs;
     if (x.length !== x[0].length) {
         throw new Error('numeric: det() only works on square matrices');
     }
@@ -412,7 +437,7 @@ function det(x) {
     for(j = 0; j < n - 1; j++){
         k = j;
         for(i1 = j + 1; i1 < n; i1++){
-            if (abs(A[i1][j]) > abs(A[k][j])) {
+            if (abs1(A[i1][j]) > abs1(A[k][j])) {
                 k = i1;
             }
         }
@@ -443,7 +468,7 @@ function det(x) {
     return ret * A[j][j];
 }
 function lu(A) {
-    var abs = Math.abs;
+    var abs1 = Math.abs;
     var i1, j, k, absAjk, Akk, Ak, Pk, Ai;
     var max1;
     var n = A.length, n1 = n - 1;
@@ -452,9 +477,9 @@ function lu(A) {
     for(k = 0; k < n; ++k){
         Pk = k;
         Ak = A[k];
-        max1 = abs(Ak[k]);
+        max1 = abs1(Ak[k]);
         for(j = k + 1; j < n; ++j){
-            absAjk = abs(A[j][k]);
+            absAjk = abs1(A[j][k]);
             if (max1 < absAjk) {
                 max1 = absAjk;
                 Pk = j;
@@ -1215,380 +1240,300 @@ export { ibetainv1 as ibetainv };
 export { randn1 as randn };
 export { randg1 as randg };
 const { int: __int1  } = mod;
-const { log , pow , sqrt , PI , tan , atan , min: min1  } = Math;
+const { log: log3 , pow: pow2 , sqrt: sqrt2 , PI , tan: tan2 , atan: atan3 , min: min1 , exp: exp2  } = Math;
 class Distribution {
-    inv(arg) {
-        let { p  } = arg;
-        mod.be(p >= 0 && p <= 1);
+    median(...args) {
+        return this.mean(args);
     }
-    median(arg) {
-        return this.mean(arg);
+    mode(...args) {
+        return this.median(args);
     }
-    mode(arg) {
-        return this.median(arg);
-    }
-    sample(arg) {
+    sample(...args) {
         let p = Math.random();
-        return this.inv(Object.assign({
-        }, arg, {
-            p
-        }));
+        return this.inv(p, ...args);
     }
-    mean(arg) {
+    inv(...args) {
+        throw Error(`inv() not implemented!`);
+    }
+    mean(...args) {
         throw Error(`mean() not implemented!`);
     }
-    variance(arg) {
+    variance(...args) {
         throw Error(`variance() not implemented!`);
     }
-    sd(arg) {
-        return Math.sqrt(this.variance(arg));
+    sd(...args) {
+        return sqrt2(this.variance(args));
     }
 }
 class Uniform1 extends Distribution {
-    pdf(arg) {
-        let { x , min: min2 , max: max1  } = arg;
-        return x < min2 || x > max1 ? 0 : 1 / (max1 - min2);
+    pdf(x, min, max) {
+        return x < min || x > max ? 0 : 1 / (max - min);
     }
-    cdf(arg) {
-        let { x , min: min2 , max: max1  } = arg;
-        if (x < min2) return 0;
-        else if (x < max1) return (x - min2) / (max1 - min2);
+    cdf(q, min, max) {
+        if (q < min) return 0;
+        else if (q < max) return (q - min) / (max - min);
         return 1;
     }
-    inv(arg) {
-        let { p , min: min2 , max: max1  } = arg;
-        return min2 + p * (max1 - min2);
+    inv(p, min, max) {
+        return min + p * (max - min);
     }
-    mean(arg) {
-        let { min: min2 , max: max1  } = arg;
-        return 0.5 * (min2 + max1);
+    mean(min, max) {
+        return 0.5 * (min + max);
     }
-    variance(arg) {
-        let { min: min2 , max: max1  } = arg;
-        return pow(max1 - min2, 2) / 12;
-    }
-}
-class Exponential1 extends Distribution {
-    pdf(arg) {
-        let { x , rate  } = arg;
-        return x < 0 ? 0 : rate * Math.exp(-rate * x);
-    }
-    cdf(arg) {
-        let { x , rate  } = arg;
-        return x < 0 ? 0 : 1 - Math.exp(-rate * x);
-    }
-    inv(arg) {
-        let { p , rate  } = arg;
-        return -log(1 - p) / rate;
-    }
-    mean(arg) {
-        let { rate  } = arg;
-        return 1 / rate;
-    }
-    medium(arg) {
-        let { rate  } = arg;
-        return 1 / rate * log(2);
-    }
-    variance(arg) {
-        let { rate  } = arg;
-        return 1 / (rate * rate);
+    variance(min, max) {
+        return pow2(max - min, 2) / 12;
     }
 }
 class Normal1 extends Distribution {
-    pdf(arg) {
-        let { x , mu , sd  } = arg;
-        let d = x - mu;
-        return 1 / (sqrt(2 * PI) * sd) * Math.exp(-(d * d) / (2 * sd * sd));
+    pdf(x, mean, sd) {
+        let d = x - mean;
+        return 1 / (sqrt2(2 * PI) * sd) * exp2(-(d * d) / (2 * sd * sd));
     }
-    cdf(arg) {
-        let { x , mu , sd  } = arg;
-        return 0.5 * (1 + erf1((x - mu) / sqrt(2 * sd * sd)));
+    cdf(q, mean, sd) {
+        return 0.5 * (1 + erf1((q - mean) / sqrt2(2 * sd * sd)));
     }
-    inv(arg) {
-        let { p , mu , sd  } = arg;
-        return -1.4142135623730951 * sd * erfcinv1(2 * p) + mu;
+    inv(p, mean, sd) {
+        return -1.4142135623730951 * sd * erfcinv1(2 * p) + mean;
     }
-    mean(arg) {
-        let { mu , sd  } = arg;
-        return mu;
+    mean(mean, sd) {
+        return mean;
     }
-    variance(arg) {
-        let { mu , sd  } = arg;
+    variance(mean, sd) {
         return sd * sd;
     }
 }
+class Exponential1 extends Distribution {
+    pdf(x, rate) {
+        return x < 0 ? 0 : rate * exp2(-rate * x);
+    }
+    cdf(q, rate) {
+        return q < 0 ? 0 : 1 - exp2(-rate * q);
+    }
+    inv(p, rate) {
+        return -log3(1 - p) / rate;
+    }
+    mean(rate) {
+        return 1 / rate;
+    }
+    medium(rate) {
+        return 1 / rate * log3(2);
+    }
+    variance(rate) {
+        return 1 / (rate * rate);
+    }
+}
 class Beta1 extends Distribution {
-    pdf(arg) {
-        let { x , alpha , beta  } = arg;
+    pdf(x, shape1, shape2) {
         if (x > 1 || x < 0) return 0;
-        if (alpha == 1 && beta == 1) return 1;
-        if (alpha < 512 && beta < 512) {
-            return pow(x, alpha - 1) * pow(1 - x, beta - 1) / betafn1(alpha, beta);
+        if (shape1 == 1 && shape2 == 1) return 1;
+        if (shape1 < 512 && shape2 < 512) {
+            return pow2(x, shape1 - 1) * pow2(1 - x, shape2 - 1) / betafn1(shape1, shape2);
         } else {
-            return Math.exp((alpha - 1) * log(x) + (beta - 1) * log(1 - x) - betaln1(alpha, beta));
+            return exp2((shape1 - 1) * log3(x) + (shape2 - 1) * log3(1 - x) - betaln1(shape1, shape2));
         }
     }
-    cdf(arg) {
-        let { x , alpha , beta  } = arg;
-        return x > 1 ? 1 : x < 0 ? 0 : ibeta1(x, alpha, beta);
+    cdf(q, shape1, shape2) {
+        return q > 1 ? 1 : q < 0 ? 0 : ibeta1(q, shape1, shape2);
     }
-    inv(arg) {
-        let { p , alpha , beta  } = arg;
-        return ibetainv1(p, alpha, beta);
+    inv(p, shape1, shape2) {
+        return ibetainv1(p, shape1, shape2);
     }
-    mean(arg) {
-        let { alpha , beta  } = arg;
-        return alpha / (alpha + beta);
+    mean(shape1, shape2) {
+        return shape1 / (shape1 + shape2);
     }
-    median(arg) {
-        let { alpha , beta  } = arg;
-        return ibetainv1(0.5, alpha, beta);
+    median(shape1, shape2) {
+        return ibetainv1(0.5, shape1, shape2);
     }
-    mode(arg) {
-        let { alpha , beta  } = arg;
-        return (alpha - 1) / (alpha + beta - 2);
+    mode(shape1, shape2) {
+        return (shape1 - 1) / (shape1 + shape2 - 2);
     }
-    variance(arg) {
-        let { alpha , beta  } = arg;
-        return alpha * beta / (pow(alpha + beta, 2) * (alpha + beta + 1));
+    variance(shape1, shape2) {
+        return shape1 * shape2 / (pow2(shape1 + shape2, 2) * (shape1 + shape2 + 1));
     }
 }
 class F1 extends Distribution {
-    pdf(arg) {
-        let { x , df1 , df2  } = arg;
+    pdf(x, df1, df2) {
         var p, q, f;
         if (x < 0) return 0;
         if (df1 <= 2) {
             if (x === 0 && df1 < 2) return Infinity;
             if (x === 0 && df1 === 2) return 1;
-            return 1 / betafn1(df1 / 2, df2 / 2) * pow(df1 / df2, df1 / 2) * pow(x, df1 / 2 - 1) * pow(1 + df1 / df2 * x, -(df1 + df2) / 2);
+            return 1 / betafn1(df1 / 2, df2 / 2) * pow2(df1 / df2, df1 / 2) * pow2(x, df1 / 2 - 1) * pow2(1 + df1 / df2 * x, -(df1 + df2) / 2);
         }
         p = df1 * x / (df2 + x * df1);
         q = df2 / (df2 + x * df1);
         f = df1 * q / 2;
-        return f * binomial1.pdf({
-            x: (df1 - 2) / 2,
-            n: (df1 + df2 - 2) / 2,
-            p
-        });
+        return f * binomial1.pdf((df1 - 2) / 2, (df1 + df2 - 2) / 2, p);
     }
-    cdf(arg) {
-        let { x , df1 , df2  } = arg;
-        if (x < 0) return 0;
-        return ibeta1(df1 * x / (df1 * x + df2), df1 / 2, df2 / 2);
+    cdf(q, df1, df2) {
+        if (q < 0) return 0;
+        return ibeta1(df1 * q / (df1 * q + df2), df1 / 2, df2 / 2);
     }
-    inv(arg) {
-        let { p , df1 , df2  } = arg;
+    inv(p, df1, df2) {
         return df2 / (df1 * (1 / ibetainv1(p, df1 / 2, df2 / 2) - 1));
     }
-    mean(arg) {
-        let { df1 , df2  } = arg;
+    mean(df1, df2) {
         if (df2 > 2) return df2 / (df2 - 2);
         throw Error(`F.mean() shold be df2 > 2, but df2=${df2}`);
     }
-    variance(arg) {
-        let { df1 , df2  } = arg;
+    variance(df1, df2) {
         if (df2 <= 4) throw Error(`F.variance() shold be df2 > 4, but df2=${df2}`);
         return 2 * df2 * df2 * (df1 + df2 - 2) / (df1 * (df2 - 2) * (df2 - 2) * (df2 - 4));
     }
 }
 class Cauchy1 extends Distribution {
-    pdf(arg) {
-        let { x , local , scale  } = arg;
+    pdf(x, location, scale) {
         if (scale < 0) return 0;
-        return scale / (pow(x - local, 2) + pow(scale, 2)) / PI;
+        return scale / (pow2(x - location, 2) + pow2(scale, 2)) / PI;
     }
-    cdf(arg) {
-        let { x , local , scale  } = arg;
-        return atan((x - local) / scale) / PI + 0.5;
+    cdf(q, location, scale) {
+        return atan3((q - location) / scale) / PI + 0.5;
     }
-    inv(arg) {
-        let { p , local , scale  } = arg;
-        return local + scale * tan(PI * (p - 0.5));
+    inv(p, location, scale) {
+        return location + scale * tan2(PI * (p - 0.5));
     }
-    mean(arg) {
-        let { local , scale  } = arg;
-        return local;
+    mean(location, scale) {
+        return location;
     }
 }
 class ChiSquare1 extends Distribution {
-    pdf(arg) {
-        let { x , dof  } = arg;
+    pdf(x, df) {
         if (x < 0) return 0;
-        return x === 0 && dof === 2 ? 0.5 : Math.exp((dof / 2 - 1) * log(x) - x / 2 - dof / 2 * log(2) - gammaln1(dof / 2));
+        return x === 0 && df === 2 ? 0.5 : exp2((df / 2 - 1) * log3(x) - x / 2 - df / 2 * log3(2) - gammaln1(df / 2));
     }
-    cdf(arg) {
-        let { x , dof  } = arg;
-        if (x < 0) return 0;
-        return lowRegGamma1(dof / 2, x / 2);
+    cdf(q, df) {
+        if (q < 0) return 0;
+        return lowRegGamma1(df / 2, q / 2);
     }
-    inv(arg) {
-        let { p , dof  } = arg;
-        return 2 * gammapinv1(p, 0.5 * dof);
+    inv(p, df) {
+        return 2 * gammapinv1(p, 0.5 * df);
     }
-    mean(arg) {
-        let { dof  } = arg;
-        return dof;
+    mean(df) {
+        return df;
     }
-    median(arg) {
-        let { dof  } = arg;
-        return dof * pow(1 - 2 / (9 * dof), 3);
+    median(df) {
+        return df * pow2(1 - 2 / (9 * df), 3);
     }
-    mode(arg) {
-        let { dof  } = arg;
-        return dof - 2 > 0 ? dof - 2 : 0;
+    mode(df) {
+        return df - 2 > 0 ? df - 2 : 0;
     }
-    variance(arg) {
-        let { dof  } = arg;
-        return 2 * dof;
+    variance(df) {
+        return 2 * df;
     }
 }
 class Gamma1 extends Distribution {
-    pdf(arg) {
-        let { x , shape , scale  } = arg;
+    pdf(x, shape, scale) {
         if (x < 0) return 0;
-        return x === 0 && shape === 1 ? 1 / scale : Math.exp((shape - 1) * log(x) - x / scale - gammaln1(shape) - shape * log(scale));
+        return x === 0 && shape === 1 ? 1 / scale : exp2((shape - 1) * log3(x) - x / scale - gammaln1(shape) - shape * log3(scale));
     }
-    cdf(arg) {
-        let { x , shape , scale  } = arg;
-        if (x < 0) return 0;
-        return lowRegGamma1(shape, x / scale);
+    cdf(q, shape, scale) {
+        if (q < 0) return 0;
+        return lowRegGamma1(shape, q / scale);
     }
-    inv(arg) {
-        let { p , shape , scale  } = arg;
+    inv(p, shape, scale) {
         return gammapinv1(p, shape) * scale;
     }
-    mean(arg) {
-        let { shape , scale  } = arg;
+    mean(shape, scale) {
         return shape * scale;
     }
-    mode(arg) {
-        let { shape , scale  } = arg;
+    mode(shape, scale) {
         if (shape > 1) return (shape - 1) * scale;
         throw Error(`Gamma.mode() should shape > 1, but shape=${shape}`);
     }
-    variance(arg) {
-        let { shape , scale  } = arg;
+    variance(shape, scale) {
         return shape * scale * scale;
     }
 }
 class InvGamma1 extends Distribution {
-    pdf(arg) {
-        let { x , shape , scale  } = arg;
+    pdf(x, shape, scale) {
         if (x <= 0) return 0;
-        return Math.exp(-(shape + 1) * log(x) - scale / x - gammaln1(shape) + shape * log(scale));
+        return exp2(-(shape + 1) * log3(x) - scale / x - gammaln1(shape) + shape * log3(scale));
     }
-    cdf(arg) {
-        let { x , shape , scale  } = arg;
-        if (x <= 0) return 0;
-        return 1 - lowRegGamma1(shape, scale / x);
+    cdf(q, shape, scale) {
+        if (q <= 0) return 0;
+        return 1 - lowRegGamma1(shape, scale / q);
     }
-    inv(arg) {
-        let { p , shape , scale  } = arg;
+    inv(p, shape, scale) {
         return scale / gammapinv1(1 - p, shape);
     }
-    mean(arg) {
-        let { shape , scale  } = arg;
+    mean(shape, scale) {
         if (shape > 1) return scale / (shape - 1);
         throw Error(`InvGamma.mean() should be shape < 1, but shape=${shape}`);
     }
-    mode(arg) {
-        let { shape , scale  } = arg;
+    mode(shape, scale) {
         return scale / (shape + 1);
     }
-    variance(arg) {
-        let { shape , scale  } = arg;
+    variance(shape, scale) {
         if (shape <= 2) throw Error(`InvGamma.variance() should be shape > 2, but shape=${shape}`);
         return scale * scale / ((shape - 1) * (shape - 1) * (shape - 2));
     }
 }
 class T1 extends Distribution {
-    pdf(arg) {
-        let { x , dof  } = arg;
-        dof = dof > 10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000 ? 10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000 : dof;
-        return 1 / (sqrt(dof) * betafn1(0.5, dof / 2)) * pow(1 + x * x / dof, -((dof + 1) / 2));
+    pdf(x, df) {
+        df = df > 10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000 ? 10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000 : df;
+        return 1 / (sqrt2(df) * betafn1(0.5, df / 2)) * pow2(1 + x * x / df, -((df + 1) / 2));
     }
-    cdf(arg) {
-        let { x , dof  } = arg;
-        var dof2 = dof / 2;
-        return ibeta1((x + sqrt(x * x + dof)) / (2 * sqrt(x * x + dof)), dof2, dof2);
+    cdf(q, df) {
+        var dof2 = df / 2;
+        return ibeta1((q + sqrt2(q * q + df)) / (2 * sqrt2(q * q + df)), dof2, dof2);
     }
-    inv(arg) {
-        let { p , dof  } = arg;
-        var x = ibetainv1(2 * min1(p, 1 - p), 0.5 * dof, 0.5);
-        x = sqrt(dof * (1 - x) / x);
+    inv(p, df) {
+        var x = ibetainv1(2 * min1(p, 1 - p), 0.5 * df, 0.5);
+        x = sqrt2(df * (1 - x) / x);
         return p > 0.5 ? x : -x;
     }
-    mean(arg) {
-        let { dof  } = arg;
-        if (dof > 1) return 0;
-        throw Error(`T.mean() should be dof > 1, but dof=${dof}`);
+    mean(df) {
+        if (df > 1) return 0;
+        throw Error(`T.mean() should be df > 1, but df=${df}`);
     }
-    median(arg) {
+    median(df) {
         return 0;
     }
-    mode(arg) {
+    mode(df) {
         return 0;
     }
-    variance(arg) {
-        let { dof  } = arg;
-        if (dof > 2) return dof / (dof - 2);
-        else if (dof > 1) return Infinity;
-        else throw Error(`T.variance() should be dof > 1, but dof=${dof}`);
+    variance(df) {
+        if (df > 2) return df / (df - 2);
+        else if (df > 1) return Infinity;
+        else throw Error(`T.variance() should be df > 1, but df=${df}`);
     }
 }
 class Weibull1 extends Distribution {
-    pdf(arg) {
-        let { x , scale , shape  } = arg;
+    pdf(x, shape, scale) {
         if (x < 0 || scale < 0 || shape < 0) return 0;
-        return shape / scale * pow(x / scale, shape - 1) * Math.exp(-pow(x / scale, shape));
+        return shape / scale * pow2(x / scale, shape - 1) * exp2(-pow2(x / scale, shape));
     }
-    cdf(arg) {
-        let { x , scale , shape  } = arg;
-        return x < 0 ? 0 : 1 - Math.exp(-pow(x / scale, shape));
+    cdf(q, shape, scale) {
+        return q < 0 ? 0 : 1 - exp2(-pow2(q / scale, shape));
     }
-    inv(arg) {
-        let { p , scale , shape  } = arg;
-        return scale * pow(-log(1 - p), 1 / shape);
+    inv(p, shape, scale) {
+        return scale * pow2(-log3(1 - p), 1 / shape);
     }
-    mean(arg) {
-        let { scale , shape  } = arg;
+    mean(shape, scale) {
         return scale * gammafn1(1 + 1 / shape);
     }
-    median(arg) {
-        let { scale , shape  } = arg;
-        return scale * pow(log(2), 1 / shape);
+    median(shape, scale) {
+        return scale * pow2(log3(2), 1 / shape);
     }
-    mode(arg) {
-        let { scale , shape  } = arg;
+    mode(shape, scale) {
         if (shape <= 1) return 0;
-        return scale * pow((shape - 1) / shape, 1 / shape);
+        return scale * pow2((shape - 1) / shape, 1 / shape);
     }
-    variance(arg) {
-        let { scale , shape  } = arg;
-        return scale * scale * gammafn1(1 + 2 / shape) - pow(weibull1.mean({
-            scale,
-            shape
-        }), 2);
+    variance(shape, scale) {
+        return scale * scale * gammafn1(1 + 2 / shape) - pow2(weibull1.mean(scale, shape), 2);
     }
 }
 class Binomial1 extends Distribution {
-    pdf(arg) {
-        let { x: k , p , n  } = arg;
-        mod.be(__int1(k));
-        return p === 0 || p === 1 ? n * p === k ? 1 : 0 : combination1(n, k) * pow(p, k) * pow(1 - p, n - k);
+    pdf(x, size, prob) {
+        if (!__int1(x)) return 0;
+        return prob === 0 || prob === 1 ? size * prob === x ? 1 : 0 : combination1(size, x) * pow2(prob, x) * pow2(1 - prob, size - x);
     }
-    cdf(arg) {
-        let { x , p , n  } = arg;
-        if (x < 0) return 0;
-        if (x < n) {
+    cdf(q, size, prob) {
+        if (q < 0) return 0;
+        if (q < size) {
             let binomarr = [];
-            for(let k = 0; k <= x; k++){
-                binomarr[k] = this.pdf({
-                    x: k,
-                    p,
-                    n
-                });
+            for(let k = 0; k <= q; k++){
+                binomarr[k] = this.pdf(k, prob, size);
             }
             return sum(binomarr);
         }
@@ -1596,56 +1541,45 @@ class Binomial1 extends Distribution {
     }
 }
 class NegBinomial1 extends Distribution {
-    pdf(arg) {
-        let { x: k , p , r  } = arg;
-        mod.be(__int1(k));
-        if (k !== k >>> 0) throw Error();
-        if (k < 0) return 0;
-        return combination1(k + r - 1, r - 1) * pow(1 - p, k) * pow(p, r);
-    }
-    cdf(arg) {
-        let { x , p , r  } = arg;
+    pdf(x, size, prob) {
+        if (!__int1(x)) return 0;
+        if (x !== x >>> 0) throw Error();
         if (x < 0) return 0;
+        return combination1(x + size - 1, size - 1) * pow2(1 - prob, x) * pow2(prob, size);
+    }
+    cdf(q, size, prob) {
+        if (q < 0) return 0;
         let sum1 = 0;
-        for(let k = 0; k <= x; k++){
-            sum1 += negBinomial1.pdf({
-                x: k,
-                r,
-                p
-            });
+        for(let k = 0; k <= q; k++){
+            sum1 += negBinomial1.pdf(k, size, prob);
         }
         return sum1;
     }
 }
 class Poisson1 extends Distribution {
-    pdf(arg) {
-        let { x: k , l  } = arg;
-        mod.be(__int1(k));
-        if (l < 0 || k % 1 !== 0 || k < 0) return 0;
-        return pow(l, k) * Math.exp(-l) / factorial1(k);
+    pdf(x, lambda) {
+        mod.be(__int1(x));
+        if (lambda < 0 || x % 1 !== 0 || x < 0) return 0;
+        return pow2(lambda, x) * exp2(-lambda) / factorial1(x);
     }
-    cdf(arg) {
-        let { x , l  } = arg;
-        var sumarr = [], k = 0;
-        if (x < 0) return 0;
-        for(; k <= x; k++){
-            sumarr.push(poisson1.pdf({
-                x: k,
-                l
-            }));
+    cdf(q, lambda) {
+        var sumarr = [], x = 0;
+        if (q < 0) return 0;
+        for(; x <= q; x++){
+            sumarr.push(poisson1.pdf(x, lambda));
         }
         return sum(sumarr);
     }
-    mean(arg) {
+    mean(lambda) {
         return 1;
     }
-    variance(arg) {
+    variance(lambda) {
         return 1;
     }
 }
 const uniform1 = new Uniform1();
-const exponential1 = new Exponential1();
 const normal1 = new Normal1();
+const exponential1 = new Exponential1();
 const beta1 = new Beta1();
 const f1 = new F1();
 const chiSquare1 = new ChiSquare1();
@@ -1657,9 +1591,116 @@ const weibull1 = new Weibull1();
 const negBinomial1 = new NegBinomial1();
 const poisson1 = new Poisson1();
 const binomial1 = new Binomial1();
+function rsamples(distribution) {
+    return eval(`
+        let f=function (n, ...args) { 
+          let v = new Array(n)
+          for (let i=0; i<n; i++) v[i] = ${distribution}.sample(...args)
+          return v
+        }; f
+      `);
+}
+const dunif1 = (x, min3, max2)=>uniform1.pdf(x, min3, max2)
+;
+const punif1 = (q, min3, max2)=>uniform1.cdf(q, min3, max2)
+;
+const qunif1 = (p, min3, max2)=>uniform1.inv(p, min3, max2)
+;
+const runif1 = rsamples('uniform');
+const dnorm1 = (x, mean, sd)=>normal1.pdf(x, mean, sd)
+;
+const pnorm1 = (q, mean, sd)=>normal1.cdf(q, mean, sd)
+;
+const qnorm1 = (p, mean, sd)=>normal1.inv(p, mean, sd)
+;
+const rnorm1 = rsamples('normal');
+const dexp1 = (x, rate)=>exponential1.pdf(x, rate)
+;
+const pexp1 = (q, rate)=>exponential1.cdf(q, rate)
+;
+const qexp1 = (p, rate)=>exponential1.inv(p, rate)
+;
+const rexp1 = rsamples('exponential');
+const dbeta1 = (x, shape1, shape2)=>beta1.pdf(x, shape1, shape2)
+;
+const pbeta1 = (q, shape1, shape2)=>beta1.cdf(q, shape1, shape2)
+;
+const qbeta1 = (p, shape1, shape2)=>beta1.inv(p, shape1, shape2)
+;
+const rbeta1 = rsamples('beta');
+const df1 = (x, df1, df2)=>f1.pdf(x, df1, df2)
+;
+const pf1 = (q, df1, df2)=>f1.cdf(q, df1, df2)
+;
+const qf1 = (p, df1, df2)=>f1.inv(p, df1, df2)
+;
+const rf1 = rsamples('f');
+const dcauchy1 = (x, location, scale)=>cauchy1.pdf(x, location, scale)
+;
+const pcauchy1 = (q, location, scale)=>cauchy1.cdf(q, location, scale)
+;
+const qcauchy1 = (p, location, scale)=>cauchy1.inv(p, location, scale)
+;
+const rcauchy1 = rsamples('cauchy');
+const dchisq1 = (x, df1)=>chiSquare1.pdf(x, df1)
+;
+const pchisq1 = (q, df1)=>chiSquare1.cdf(q, df1)
+;
+const qchisq1 = (p, df1)=>chiSquare1.inv(p, df1)
+;
+const rchisq1 = rsamples('chisq');
+const dgamma1 = (x, shape, scale)=>gamma1.pdf(x, shape, scale)
+;
+const pgamma1 = (q, shape, scale)=>gamma1.cdf(q, shape, scale)
+;
+const qgamma1 = (p, shape, scale)=>gamma1.inv(p, shape, scale)
+;
+const rgamma1 = rsamples('gamma');
+const dinvgamma1 = (x, shape, scale)=>invGamma1.pdf(x, shape, scale)
+;
+const pinvgamma1 = (q, shape, scale)=>invGamma1.cdf(q, shape, scale)
+;
+const qinvgamma1 = (p, shape, scale)=>invGamma1.inv(p, shape, scale)
+;
+const rinvgamma1 = rsamples('invgamma');
+const dt1 = (x, df1)=>t1.pdf(x, df1)
+;
+const pt1 = (q, df1)=>t1.cdf(q, df1)
+;
+const qt1 = (p, df1)=>t1.inv(p, df1)
+;
+const rt1 = rsamples('t');
+const dweibull1 = (x, shape, scale)=>weibull1.pdf(x, scale, shape)
+;
+const pweibull1 = (q, shape, scale)=>weibull1.cdf(q, scale, shape)
+;
+const qweibull1 = (p, shape, scale)=>weibull1.inv(p, scale, shape)
+;
+const rweibull1 = rsamples('weibull');
+const dbinom1 = (x, shape, scale)=>binomial1.pdf(x, shape, scale)
+;
+const pbinom1 = (q, shape, scale)=>binomial1.cdf(q, shape, scale)
+;
+const qbinom1 = (p, shape, scale)=>binomial1.inv(p, shape, scale)
+;
+const rbinom1 = rsamples('binomial');
+const dnbinom1 = (x, size, prob)=>negBinomial1.pdf(x, size, prob)
+;
+const pnbinom1 = (q, size, prob)=>negBinomial1.cdf(q, size, prob)
+;
+const qnbinom1 = (p, size, prob)=>negBinomial1.inv(p, size, prob)
+;
+const rnbinom1 = rsamples('negBinomial');
+const dpois1 = (x, lambda)=>poisson1.pdf(x, lambda)
+;
+const ppois1 = (q, lambda)=>poisson1.cdf(q, lambda)
+;
+const qpois1 = (p, lambda)=>poisson1.inv(p, lambda)
+;
+const rpois1 = rsamples('poisson');
 export { Uniform1 as Uniform };
-export { Exponential1 as Exponential };
 export { Normal1 as Normal };
+export { Exponential1 as Exponential };
 export { Beta1 as Beta };
 export { F1 as F };
 export { Cauchy1 as Cauchy };
@@ -1672,8 +1713,8 @@ export { Binomial1 as Binomial };
 export { NegBinomial1 as NegBinomial };
 export { Poisson1 as Poisson };
 export { uniform1 as uniform };
-export { exponential1 as exponential };
 export { normal1 as normal };
+export { exponential1 as exponential };
 export { beta1 as beta };
 export { f1 as f };
 export { chiSquare1 as chiSquare };
@@ -1685,7 +1726,63 @@ export { weibull1 as weibull };
 export { negBinomial1 as negBinomial };
 export { poisson1 as poisson };
 export { binomial1 as binomial };
-function op1(t11, op) {
+export { dunif1 as dunif };
+export { punif1 as punif };
+export { qunif1 as qunif };
+export { runif1 as runif };
+export { dnorm1 as dnorm };
+export { pnorm1 as pnorm };
+export { qnorm1 as qnorm };
+export { rnorm1 as rnorm };
+export { dexp1 as dexp };
+export { pexp1 as pexp };
+export { qexp1 as qexp };
+export { rexp1 as rexp };
+export { dbeta1 as dbeta };
+export { pbeta1 as pbeta };
+export { qbeta1 as qbeta };
+export { rbeta1 as rbeta };
+export { df1 as df };
+export { pf1 as pf };
+export { qf1 as qf };
+export { rf1 as rf };
+export { dcauchy1 as dcauchy };
+export { pcauchy1 as pcauchy };
+export { qcauchy1 as qcauchy };
+export { rcauchy1 as rcauchy };
+export { dchisq1 as dchisq };
+export { pchisq1 as pchisq };
+export { qchisq1 as qchisq };
+export { rchisq1 as rchisq };
+export { dgamma1 as dgamma };
+export { pgamma1 as pgamma };
+export { qgamma1 as qgamma };
+export { rgamma1 as rgamma };
+export { dinvgamma1 as dinvgamma };
+export { pinvgamma1 as pinvgamma };
+export { qinvgamma1 as qinvgamma };
+export { rinvgamma1 as rinvgamma };
+export { dt1 as dt };
+export { pt1 as pt };
+export { qt1 as qt };
+export { rt1 as rt };
+export { dweibull1 as dweibull };
+export { pweibull1 as pweibull };
+export { qweibull1 as qweibull };
+export { rweibull1 as rweibull };
+export { dbinom1 as dbinom };
+export { pbinom1 as pbinom };
+export { qbinom1 as qbinom };
+export { rbinom1 as rbinom };
+export { dnbinom1 as dnbinom };
+export { pnbinom1 as pnbinom };
+export { qnbinom1 as qnbinom };
+export { rnbinom1 as rnbinom };
+export { dpois1 as dpois };
+export { ppois1 as ppois };
+export { qpois1 as qpois };
+export { rpois1 as rpois };
+function op11(t11, op) {
     let V1 = mod1;
     let rv = V1[op](t11.v);
     return new Tensor1(t11.shape, rv);
@@ -1780,97 +1877,97 @@ class Tensor1 {
         return op21(this, "geq", t2);
     }
     neg() {
-        return op1(this, "neg");
+        return op11(this, "neg");
     }
     abs() {
-        return op1(this, "abs");
+        return op11(this, "abs");
     }
     log() {
-        return op1(this, "log");
+        return op11(this, "log");
     }
     not() {
-        return op1(this, "not");
+        return op11(this, "not");
     }
     sin() {
-        return op1(this, "sin");
+        return op11(this, "sin");
     }
     cos() {
-        return op1(this, "cos");
+        return op11(this, "cos");
     }
     tan() {
-        return op1(this, "tan");
+        return op11(this, "tan");
     }
     cot() {
-        return op1(this, "cot");
+        return op11(this, "cot");
     }
     sec() {
-        return op1(this, "sec");
+        return op11(this, "sec");
     }
     csc() {
-        return op1(this, "csc");
+        return op11(this, "csc");
     }
     asin() {
-        return op1(this, "asin");
+        return op11(this, "asin");
     }
     acos() {
-        return op1(this, "acos");
+        return op11(this, "acos");
     }
     atan() {
-        return op1(this, "atan");
+        return op11(this, "atan");
     }
     atan2() {
-        return op1(this, "atan2");
+        return op11(this, "atan2");
     }
     atanh() {
-        return op1(this, "atanh");
+        return op11(this, "atanh");
     }
     cbrt() {
-        return op1(this, "cbrt");
+        return op11(this, "cbrt");
     }
     ceil() {
-        return op1(this, "ceil");
+        return op11(this, "ceil");
     }
     clz32() {
-        return op1(this, "clz32");
+        return op11(this, "clz32");
     }
     cosh() {
-        return op1(this, "cosh");
+        return op11(this, "cosh");
     }
     exp() {
-        return op1(this, "exp");
+        return op11(this, "exp");
     }
     expm1() {
-        return op1(this, "expm1");
+        return op11(this, "expm1");
     }
     floor() {
-        return op1(this, "floor");
+        return op11(this, "floor");
     }
     fround() {
-        return op1(this, "fround");
+        return op11(this, "fround");
     }
     hypot() {
-        return op1(this, "hypot");
+        return op11(this, "hypot");
     }
     log10() {
-        return op1(this, "log10");
+        return op11(this, "log10");
     }
     log1p() {
-        return op1(this, "log1p");
+        return op11(this, "log1p");
     }
     log2() {
-        return op1(this, "log2");
+        return op11(this, "log2");
     }
     round() {
-        return op1(this, "round");
+        return op11(this, "round");
     }
     sign() {
-        return op1(this, "sign");
+        return op11(this, "sign");
     }
     sqrt() {
-        return op1(this, "sqrt");
+        return op11(this, "sqrt");
     }
     trunc() {
-        return op1(this, "trunc");
+        return op11(this, "trunc");
     }
     min() {
         return op1n(this, "min");
@@ -1965,47 +2062,36 @@ class Tensor1 {
     }
 }
 export { Tensor1 as Tensor };
-function samples1(a5, n) {
-    let s = new Array(n);
-    for(let i1 = 0; i1 < n; i1++){
-        s[i1] = randomChoose1(a5);
+function probChoose1(x, prob) {
+    let xlen = x.length;
+    let p = random1();
+    let psum = 0;
+    for(var pi = 0; pi < xlen; pi++){
+        psum += prob[pi];
+        if (psum >= p) break;
     }
-    return s;
+    return pi;
 }
-function rsamples(distribution) {
-    return eval(`
-      let f=function (arg) { 
-        let {n} = arg, v = new Array(n)
-        for (let i=0; i<n; i++) v[i] = P.${distribution}.sample(arg)
-        return v
-      }; f
-    `);
+function samples1(x, size, replace = false, prob = null) {
+    if (replace && size > x.length) throw Error(`samples():should be size<x.length, but (size=${size})>(x.length=${x.length})`);
+    let slots = x.slice(0);
+    let xlen = x.length;
+    let p = prob == null ? vector(xlen, 1 / xlen) : prob.slice(0);
+    let rlist = new Array(size);
+    for(let i1 = 0; i1 < size; i1++){
+        let xi = probChoose1(slots, p);
+        rlist[i1] = x[xi];
+        if (replace) {
+            p[xi] = 0;
+            normalize(p);
+        }
+    }
+    return rlist;
 }
-const dunif1 = (arg)=>uniform1.pdf(arg)
-;
-const punif1 = (arg)=>uniform1.cdf(arg)
-;
-const qunif1 = (arg)=>uniform1.inv(arg)
-;
-const runif1 = rsamples('uniform');
-const dexp1 = (arg)=>exponential1.pdf(arg)
-;
-const pexp1 = (arg)=>exponential1.cdf(arg)
-;
-const qexp1 = (arg)=>exponential1.inv(arg)
-;
-const rexp1 = rsamples('exp');
-const dnorm1 = (arg)=>normal1.pdf(arg)
-;
-const pnorm1 = (arg)=>normal1.cdf(arg)
-;
-const qnorm1 = (arg)=>normal1.inv(arg)
-;
-const rnorm1 = rsamples('norm');
-function hist1(a5, from = Math.floor(min(a5)), to = Math.ceil(max(a5)), step = 1) {
+function histogram1(a5, from = Math.floor(min2(a5)), to = Math.ceil(max1(a5)), step = 1) {
     var n = Math.ceil((to - from + 0.00000001) / step);
     var xc = range1(from + step / 2, to, step);
-    var bins = array1(n, 0);
+    var bins = vector(n, 0);
     let len = a5.length;
     for(let i1 = 0; i1 < len; i1++){
         var slot = Math.floor((a5[i1] - from) / step);
@@ -2022,19 +2108,10 @@ function hist1(a5, from = Math.floor(min(a5)), to = Math.ceil(max(a5)), step = 1
         step: step
     };
 }
+export { probChoose1 as probChoose };
 export { samples1 as samples };
-export { dunif1 as dunif };
-export { punif1 as punif };
-export { qunif1 as qunif };
-export { runif1 as runif };
-export { dexp1 as dexp };
-export { pexp1 as pexp };
-export { qexp1 as qexp };
-export { rexp1 as rexp };
-export { dnorm1 as dnorm };
-export { pnorm1 as pnorm };
-export { qnorm1 as qnorm };
-export { rnorm1 as rnorm };
-export { hist1 as hist };
+export { histogram1 as histogram };
+const { abs: abs1 , acos: acos1 , acosh: acosh1 , asin: asin1 , asinh: asinh1 , atan: atan1 , atan2: atan21 , atanh: atanh1 , cbrt: cbrt1 , ceil: ceil1 , clz32: clz321 , cos: cos1 , cosh: cosh1 , exp: exp1 , expm1: expm11 , floor: floor1 , fround: fround1 , hypot: hypot1 , imul: imul1 , log: log1 , log10: log101 , log1p: log1p1 , log2: log21 , max: max2 , min: min3 , pow: pow1 , round: round1 , sign: sign1 , sin: sin1 , sinh: sinh1 , sqrt: sqrt1 , tan: tan1 , tanh: tanh1 , trunc: trunc1  } = Math;
+export { abs1 as abs, acos1 as acos, acosh1 as acosh, asin1 as asin, asinh1 as asinh, atan1 as atan, atan21 as atan2, atanh1 as atanh, cbrt1 as cbrt, ceil1 as ceil, clz321 as clz32, cos1 as cos, cosh1 as cosh, exp1 as exp, expm11 as expm1, floor1 as floor, fround1 as fround, hypot1 as hypot, imul1 as imul, log1 as log, log101 as log10, log1p1 as log1p, log21 as log2, max2 as max, min3 as min, pow1 as pow, round1 as round, sign1 as sign, sin1 as sin, sinh1 as sinh, sqrt1 as sqrt, tan1 as tan, tanh1 as tanh, trunc1 as trunc };
 export { mod1 as V };
 export { mod2 as M };

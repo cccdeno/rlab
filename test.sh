@@ -1,0 +1,1 @@
+deno test --importmap globalmap.json test 
