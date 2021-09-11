@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/c3/0.7.18/c3.css" rel="stylesheet" />
+  <style>
+    .chart { 
+      border: 2px solid #aaaaaa;
+      border-radius: 5px;
+      display: inline-block;
+      width:400px;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="chart0" class="chart"></div>
+  <div id="chart1" class="chart"></div>
+  <div id="chart2" class="chart"></div>
+  <div id="chart3" class="chart"></div>
+  <div id="chart4" class="chart"></div>
+  <div id="chart5" class="chart"></div>
+  <div id="chart6" class="chart"></div>
+  <div id="chart7" class="chart"></div>
+  <div id="chart8" class="chart"></div>
+  <script type="module">
+    import * as C from "../../chart6/mod.js"
+
+    function chart0() {
+      var g = C.chart("#chart0")
+      C.curveChart(g, "sin(x)", Math.sin, 0, 10, 0.1)
+      C.curveChart(g, "cos(x)", Math.cos, 0, 10, 0.1)
+      C.showChart(g)
+    }
+
+    function chart1() {
+      var chart = c3.generate({
+        bindto: "#chart1",
+        data: {
+          columns: [
+            ["data1", 30, 200, 100, 400, 150, 250],
+            ["data2", 50, 20, 10, 40, 15, 25],
+          ],
+        },
+      });
+    }
+
+    function chart2() {
+      var g = C.chart("#chart2")
+      var x = [1, 2, 3, 4], y1 = [7, 5, 9, 2], y2 = [3, 9, 2, 8], y3 = [4, 7, 3, 6]
+      C.addChart(g, "A", "bar", x, y1)
+      C.showChart(g)
+    }
+
+    function chart3() {
+      var g = C.chart("#chart3")
+      var x = [1, 2, 3, 4], y1 = [7, 5, 9, 2], y2 = [3, 9, 2, 8], y3 = [4, 7, 3, 6], y4 = [3, 5, 2, 7], y5 = [1, 6, 3, 4]
+      C.addChart(g, "A", "bar", x, y1)
+      C.addChart(g, "B", "bar", x, y2)
+      C.addChart(g, "C", "line", x, y3)
+      C.addChart(g, "D", "spline", x, y4)
+      C.addChart(g, "E", "area", x, y5)
+      C.showChart(g)
+    }
+
+    function chart4() {
+      var g = C.chart("#chart4")
+      var x = [1, 2, 3, 4], y1 = [7, 5, 9, 2], y2 = [3, 9, 2, 8], y3 = [4, 7, 3, 6], y4 = [3, 5, 2, 7], y5 = [1, 6, 3, 4]
+      C.addChart(g, "A", "step", x, y1)
+      C.addChart(g, "B", "area-step", x, y2)
+      C.addChart(g, "C", "line", x, y3)
+      C.addChart(g, "D", "bar", x, y4)
+      C.addChart(g, "E", "area", x, y5)
+      C.showChart(g)
+    }
+
+    function chart5() {
+      var g = C.chart("#chart5")
+      var x1 = [3.1, 3.7, 3.0, 3.4, 3.5, 3.2, 3.7 ], 
+          y1 = [3.3, 3.2, 3.4, 3.7, 3.3, 3.1, 3.8]
+      var x2 = [1.3, 1.2, 1.4, 1.5, 1.7, 1.2, 1.9], 
+          y2 = [1.4, 1.6, 1.7, 1.3, 1.8, 1.3, 1.1]
+      // , y3 = [4, 7, 3, 6], y4 = [3, 5, 2, 7], y5 = [1, 6, 3, 4]
+      C.addChart(g, "A", "scatter", x1, y1)
+      C.addChart(g, "B", "scatter", x2, y2)
+      C.addChart(g, "C", "scatter", x1, y2)
+      C.showChart(g)
+    }
+
+    function chart6() {
+      var g = C.chart("#chart6")
+      C.pieChart(g, {A:20, B:30, C:50})
+      C.showChart(g)
+    }
+
+    function chart7() {
+      var g = C.chart("#chart7")
+      var x = ['2013-01-01', '2013-01-02', '2013-01-03', '2013-01-04', '2013-01-05', '2013-01-06']
+      var timeSeries = [
+        ['data1', 30, 200, 100, 400, 150, 250],
+        ['data2', 130, 340, 200, 500, 250, 350]
+      ]
+      C.timeChart(g, x, timeSeries)
+      console.log(JSON.stringify(g))
+      C.showChart(g)
+    }
+
+    function main() {
+      chart0()
+      chart1()
+      chart2()
+      chart3()
+      chart4()
+      chart5()
+      chart6()
+      chart7()
+      chart8()
+    }
+
+    main()
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,9 @@
+{
+  "$schema": "https://deno.land/x/denon@2.4.7/schema.json",
+  "scripts": {    
+    "start": {
+      "cmd": "deno run -A --unstable ../pub6/pub6.js ../ 3001",
+      "desc": "Demo: http://localhsot:3001/rlab/web/rlab.html"
+    }
+  }
+}
