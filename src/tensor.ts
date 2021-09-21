@@ -15,13 +15,15 @@ function op1n(t1: Tensor, op: string, axis?:number) {
     let r = V1[op](t1.v)
     return r  
   } else {
-    let d = ND.ndist(t1.shape, t1.v, axis)
+    let d = ND.ncollapse(t1.shape, t1.v, axis)
     let len = d.length
     let r = new Array(len)
     for (let i=0; i<len; i++) {
       r[i] = V1[op](d[i])
     }
-    return r
+    let cshape = t1.shape.slice(0)
+    cshape.splice(axis, 1)
+    return new Tensor(cshape, r)
   }
 }
 

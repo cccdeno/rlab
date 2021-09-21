@@ -99,11 +99,38 @@ export function ndist(shape:number[], v:number[], axis:number) {
     let r = A.repeats(shape[axis], ()=>[])
     let idx:number[] = []
     ndisti(shape, v, axis, 0, r, idx)
-    console.log('r=', r)
+    // console.log('r=', r)
     return r
 }
 
+export function ncollapsei(shape:number[], v:number[], axis:number, si:number, r:number[][], idx:number[]) {
+    // console.log('idx=', idx)
+    if (idx.length == shape.length) {
+        let cshape = shape.slice(0)
+        cshape.splice(axis, 1)
+        let cidx = idx.slice(0)
+        cidx.splice(axis, 1)
+        r[offset(cshape, cidx)].push(v[offset(shape, idx)])
+    }
+    for (let i=0; i<shape[si]; i++) {
+        idx.push(i)
+        ncollapsei(shape, v, axis, si+1, r, idx)
+        idx.pop()
+    }
+}
 
+export function ncollapse(shape:number[], v:number[], axis:number) {
+    // console.log('ncollapse:shape=', shape)
+    let cshape = shape.slice(0)
+    cshape.splice(axis, 1)
+    // console.log('ncollapse:cshape=', cshape)
+    let r = A.repeats(size(cshape), ()=>[])
+    // console.log('ncollapse:r=', r)
+    let idx:number[] = []
+    ncollapsei(shape, v, axis, 0, r, idx)
+    // console.log('r=', r)
+    return r
+}
 // ============== map/reduce ====================
 export function map1(a: any, f: (x: any) => any) {
     if (a instanceof Array) {
