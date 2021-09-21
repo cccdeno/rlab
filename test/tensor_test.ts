@@ -27,4 +27,9 @@ Deno.test("tensor", () => {
     let t3d = new Tensor([2,2,2], [1,2,3,4,5,6,7,8])
     let a3d = t3d.toArray()
     T.eq(a3d, [[[1,2],[3,4]],[[5,6],[7,8]]])
+
+    let t3d2 = Tensor.fromArray(a3d)
+    T.eq(t3d2, t3d)
+
+    // console.log(t3d2)
 })

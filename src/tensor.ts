@@ -1,27 +1,29 @@
+import * as ND from './ndarray.ts'
 import * as V from './vector.ts'
 import * as U from './util.ts'
+import * as M from './matrix.ts'
 
-function op1(t1:Tensor, op:string) {
-  let V1 = V as {[index: string]:any}
+function op1(t1: Tensor, op: string) {
+  let V1 = V as { [index: string]: any }
   let rv = V1[op](t1.v)
-  return new Tensor(t1.shape, rv)  
+  return new Tensor(t1.shape, rv)
 }
 
-function op1n(t1:Tensor, op:string) {
-  let V1 = V as {[index: string]:any}
+function op1n(t1: Tensor, op: string) {
+  let V1 = V as { [index: string]: any }
   let r = V1[op](t1.v)
   return r
 }
 
-function op2(t1:Tensor, op:string, t2:Tensor) {
-  let V2 = V as {[index: string]:any}
+function op2(t1: Tensor, op: string, t2: Tensor) {
+  let V2 = V as { [index: string]: any }
   U.be(V.eq(t1.shape, t2.shape))
   let rv = V2[op](t1.v, t2.v)
-  return new Tensor(t1.shape, rv)  
+  return new Tensor(t1.shape, rv)
 }
 
-function op2n(t1:Tensor, op:string, t2:Tensor) {
-  let V2 = V as {[index: string]:any}
+function op2n(t1: Tensor, op: string, t2: Tensor) {
+  let V2 = V as { [index: string]: any }
   U.be(V.eq(t1.shape, t2.shape))
   let r = V2[op](t1.v, t2.v)
   return r
@@ -36,16 +38,15 @@ export class Tensor {
     this.v = v ? v : V.vector(V.product(shape), 0)
   }
 
-  dim() { return this.shape.length }
+  dim() { return ND.dim(this.shape) }
 
-  map1(f:(a:any)=>any) {
+  map1(f: (a: any) => any) {
     return new Tensor(this.shape, U.map1(this.v, f))
   }
 
-  map2(t2: Tensor, f:(a:any,b:any)=>any) {
+  map2(t2: Tensor, f: (a: any, b: any) => any) {
     return new Tensor(this.shape, U.map2(this.v, t2.v, f))
   }
-
   // vector = this.op(t2)
   add(t2: Tensor) { return op2(this, "add", t2); }
   sub(t2: Tensor) { return op2(this, "sub", t2); }
@@ -115,17 +116,9 @@ export class Tensor {
   normalize2() { return op1n(this, "normalize2"); }
 
   // number = this.op2(t2)
-  near(t2:Tensor) { return op2n(this, "near", t2); }
+  near(t2: Tensor) { return op2n(this, "near", t2); }
 
-  offset(idx: number[]) {
-    let shape = this.shape
-    let dim = shape.length
-    let offset = idx[0]
-    for (let i = 1; i < dim; i++) {
-      offset = offset * shape[i] + idx[i]
-    }
-    return offset
-  }
+  offset(idx: number[]) { return ND.offset(this.shape, idx) }
 
   get(idx: number[]) {
     let j = this.offset(idx)
@@ -137,35 +130,29 @@ export class Tensor {
     this.v[j] = x
   }
 
-  toVector() { return this.v; }
+  toVector() { return this.v }
 
-  toArray() {
-    let { v, shape } = this
-    var r
+  toArray() { return ND.toArray(this.shape, this.v) }
+
+  static fromArray(array: any[]) {
+    let v = ND.flatten(array)
+    let shape = ND.getShape(array)
+    return new Tensor(shape, v)
+  }
+
+  // matrix
+  dot(t2:Tensor) {
+    V.eq(this.shape, t2.shape, `this.dot(t2) should have the same shape, but this=${this}, t2=${t2}`)
     switch (this.dim()) {
       case 1:
-        r = v
-        break
+        let v = V.dot(this.v, t2.v)
+        return new Tensor([1], [v])
       case 2:
-        r = new Array(shape[0])
-        for (let i = 0; i < shape[0]; i++) {
-          r[i] = v.slice(i * shape[1], (i + 1) * shape[1])
-        }
-        break
-      case 3:
-        r = new Array(shape[0])
-        for (let i = 0; i < shape[0]; i++) {
-          r[i] = new Array(shape[1])
-          for (let j = 0; j < shape[1]; j++) {
-            let start = ((i * shape[0]) + j) * shape[1]
-            let end = ((i * shape[0]) + j + 1) * shape[1]
-            r[i][j] = v.slice(start, end)
-          }
-        }
-        break
+        let m1 = this.toArray(), m2 = t2.toArray()
+        let m = M.dot(m1, m2)
+        return Tensor.fromArray(m)
       default:
-        throw Error(`Tensor.toArray() do not support dimension>3, dim=${this.dim()}!`)
+        throw Error(`dot do not support dim=${this.dim()}`)
     }
-    return r
   }
 }

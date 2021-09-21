@@ -8,7 +8,7 @@ export function matrix(rows: number, cols: number) {
   }
   return r
 }
-
+/* 改用 NDarray 的 flatten 更通用
 export function flatten(m: number[][]) {
   let rows = m.length, cols = m[0].length
   let r = new Array()
@@ -18,7 +18,7 @@ export function flatten(m: number[][]) {
   }
   return r
 }
-
+*/
 export function identity(n: number) {
   let v = V.vector(n, 1)
   return diag(v)
@@ -62,6 +62,36 @@ export function dot(a: number[][], b: number[][]) {
   return r
 }
 
+export function conv(k:number[][], m:number[][]){
+    var r = matrix(m.length, m[0].length)
+    var kRows = k.length
+    var kCols = k[0].length
+    var rows = m.length
+    var cols = m[0].length
+    // find center position of kernel (half of kernel size)
+    var kCenterX = Math.floor(kCols/2)
+    var kCenterY = Math.floor(kRows/2)
+    var i, j, x, y, ii, jj
+
+    for(i=0; i < rows; ++i) {          // for all rows
+        for(j=0; j < cols; ++j) {          // for all columns
+            for(x=0; x < kRows; ++x) {         // for all kernel rows
+                for(y=0; y < kCols; ++y) {        // for all kernel columns
+                    // index of input signal, used for checking boundary
+                    ii = i + (x - kCenterY)
+                    jj = j + (y - kCenterX)
+                    // ignore input samples which are out of bound
+                    if(ii >= 0 && ii < rows && jj >= 0 && jj < cols){
+                        r[i][j] += m[ii][jj] * k[x][y]
+                    }
+                }
+            }
+        }
+    }
+    return r
+}
+
+// =========================== long function =============================
 export function inv(m0: number[][]) {
   let m = m0.length, n = m0[0].length, abs = Math.abs
   let A = U.clone(m0), Ai, Aj

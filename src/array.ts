@@ -1,5 +1,5 @@
 export function array(n:number, value:any=0) {
-  if (n <= 0) n = 1
+  if (n <= 0) throw Error('array: n should be > 0')
   let a = new Array(n)
   return a.fill(value)
 }

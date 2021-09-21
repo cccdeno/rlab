@@ -1,6 +1,6 @@
-export const Pi = Math.PI
-export const E = Math.E
-export const Epsilon = 2.220446049250313e-16
+export * from './random.ts'
+export * from './ndarray.ts'
+export * from './constant.ts'
 
 export function range(begin:number, end:number, step:number=1) {
   let len = Math.floor((end-begin)/step)
@@ -30,7 +30,11 @@ export function clone(o:any) {
   return r
 }
 
-export function int(x:number):boolean {
+export function int(x:number):number {
+  return Math.floor(x)
+}
+
+export function isInt(x:number):boolean {
   return Number.isInteger(x)
 }
 
@@ -40,53 +44,8 @@ export function be(cond:boolean, ...args:any) {
   }
 }
 
-export function random(min: number = 0, max: number = 1) {
-  return min + Math.random() * (max - min)
-}
-
-export function randomInt(min: number, max: number) {
-  return Math.floor(random(min, max))
-}
-
-export function randomChoose(a: any[]) {
-  return a[randomInt(0, a.length)]
-}
-
-// ================== Map Reduce =========================
-export function map1(a:any, f:(x:any)=>any) {
-  if (a instanceof Array) {
-    var fa = new Array(a.length)
-    for (var i = 0; i < a.length; i++) {
-      fa[i] = map1(a[i], f)
-    }
-    return fa
-  } else {
-    return f(a)
+export function eq(a:any, b:any, ...args:any) {
+  if (JSON.stringify(a) != JSON.stringify(b)) {
+    throw Error(args.toString())
   }
-}
-
-export function map2(a:any, b:any, f:(x:any, y:any)=>any) {
-  if (a instanceof Array) {
-    var fa = new Array(a.length)
-    var isArrayB = (b instanceof Array)
-    for (var i = 0; i < a.length; i++) {
-      var bi = isArrayB ? b[i] : b
-      fa[i] = map2(a[i], bi, f)
-    }
-    return fa
-  } else {
-    return f(a, b)
-  }
-}
-
-export function reduce(a:any, f:any, init:(x:any)=>any) {
-  var result = init
-  if (a instanceof Array) {
-    for (var i in a) {
-      result = f(result, reduce(a[i], f, init))
-    }
-  } else {
-    result = f(result, a)
-  }
-  return result
 }
