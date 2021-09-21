@@ -10,22 +10,22 @@ Deno.test("ndarray: ndarray()", () => {
     T.eq(z3d, [ [ [ 0, 0 ], [ 0, 0 ] ], [ [ 0, 0 ], [ 0, 0 ] ] ])
 })
 
-Deno.test("ndarray: ndist()", () => {
+Deno.test("ndarray: collect()", () => {
     var axis, shape=[2,2,2], v=[0,1,2,3,4,5,6,7]
-    let d0 = R.ndist(shape, v, axis=0)
+    let d0 = R.collect(shape, v, axis=0)
     T.eq(d0, [ [ 0, 1, 2, 3 ], [ 4, 5, 6, 7 ] ])
-    let d1 = R.ndist(shape, v, axis=1)
+    let d1 = R.collect(shape, v, axis=1)
     T.eq(d1, [ [ 0, 1, 4, 5 ], [ 2, 3, 6, 7 ] ])
-    let d2 = R.ndist(shape, v, axis=2)
+    let d2 = R.collect(shape, v, axis=2)
     T.eq(d2, [ [ 0, 2, 4, 6 ], [ 1, 3, 5, 7 ] ])
 })
 
-Deno.test("ndarray: ncollapse()", () => {
+Deno.test("ndarray: collapse()", () => {
     var axis, shape=[2,2,2], v=[0,1,2,3,4,5,6,7]
-    let d0 = R.ncollapse(shape, v, axis=0)
+    let d0 = R.collapse(shape, v, axis=0)
     T.eq(d0, [ [ 0, 4 ], [ 1, 5 ], [ 2, 6 ], [ 3, 7 ] ])
-    let d1 = R.ncollapse(shape, v, axis=1)
+    let d1 = R.collapse(shape, v, axis=1)
     T.eq(d1, [ [ 0, 2 ], [ 1, 3 ], [ 4, 6 ], [ 5, 7 ] ])
-    let d2 = R.ncollapse(shape, v, axis=2)
+    let d2 = R.collapse(shape, v, axis=2)
     T.eq(d2, [ [ 0, 1 ], [ 2, 3 ], [ 4, 5 ], [ 6, 7 ] ])
 })

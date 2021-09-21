@@ -8,7 +8,7 @@ Deno.test("np: dot", () => {
     console.log('t3=', t3)
     T.eq(t1, t3)
 })
-/*
+
 Deno.test("np: sum", () => {
     var axis
     let t1 = np.tensor([[1, 2], [3, 4]])
@@ -23,4 +23,3 @@ Deno.test("np: sum", () => {
     T.eq(s2a.toArray(), [[4,6], [12,14]])
     T.eq(s2b.toArray(), [[6,8], [10, 12]])
 })
-*/

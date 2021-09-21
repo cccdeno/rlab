@@ -83,27 +83,27 @@ export function flatten(a: any) {
     return r
 }
 
-export function ndisti(shape:number[], v:number[], axis:number, si:number, r:number[][], idx:number[]) {
+function collecti(shape:number[], v:number[], axis:number, si:number, r:number[][], idx:number[]) {
     // console.log('idx=', idx)
     if (idx.length == shape.length) {
         r[idx[axis]].push(v[offset(shape, idx)])
     }
     for (let i=0; i<shape[si]; i++) {
         idx.push(i)
-        ndisti(shape, v, axis, si+1, r, idx)
+        collecti(shape, v, axis, si+1, r, idx)
         idx.pop()
     }
 }
 
-export function ndist(shape:number[], v:number[], axis:number) {
+export function collect(shape:number[], v:number[], axis:number) {
     let r = A.repeats(shape[axis], ()=>[])
     let idx:number[] = []
-    ndisti(shape, v, axis, 0, r, idx)
+    collecti(shape, v, axis, 0, r, idx)
     // console.log('r=', r)
     return r
 }
 
-export function ncollapsei(shape:number[], v:number[], axis:number, si:number, r:number[][], idx:number[]) {
+function collapsei(shape:number[], v:number[], axis:number, si:number, r:number[][], idx:number[]) {
     // console.log('idx=', idx)
     if (idx.length == shape.length) {
         let cshape = shape.slice(0)
@@ -114,21 +114,17 @@ export function ncollapsei(shape:number[], v:number[], axis:number, si:number, r
     }
     for (let i=0; i<shape[si]; i++) {
         idx.push(i)
-        ncollapsei(shape, v, axis, si+1, r, idx)
+        collapsei(shape, v, axis, si+1, r, idx)
         idx.pop()
     }
 }
 
-export function ncollapse(shape:number[], v:number[], axis:number) {
-    // console.log('ncollapse:shape=', shape)
+export function collapse(shape:number[], v:number[], axis:number) {
     let cshape = shape.slice(0)
     cshape.splice(axis, 1)
-    // console.log('ncollapse:cshape=', cshape)
     let r = A.repeats(size(cshape), ()=>[])
-    // console.log('ncollapse:r=', r)
     let idx:number[] = []
-    ncollapsei(shape, v, axis, 0, r, idx)
-    // console.log('r=', r)
+    collapsei(shape, v, axis, 0, r, idx)
     return r
 }
 // ============== map/reduce ====================

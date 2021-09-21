@@ -15,7 +15,7 @@ function op1n(t1: Tensor, op: string, axis?:number) {
     let r = V1[op](t1.v)
     return r  
   } else {
-    let d = ND.ncollapse(t1.shape, t1.v, axis)
+    let d = ND.collapse(t1.shape, t1.v, axis)
     let len = d.length
     let r = new Array(len)
     for (let i=0; i<len; i++) {
