@@ -9,10 +9,20 @@ function op1(t1: Tensor, op: string) {
   return new Tensor(t1.shape, rv)
 }
 
-function op1n(t1: Tensor, op: string) {
+function op1n(t1: Tensor, op: string, axis?:number) {
   let V1 = V as { [index: string]: any }
-  let r = V1[op](t1.v)
-  return r
+  if (axis == null) {
+    let r = V1[op](t1.v)
+    return r  
+  } else {
+    let d = ND.ndist(t1.shape, t1.v, axis)
+    let len = d.length
+    let r = new Array(len)
+    for (let i=0; i<len; i++) {
+      r[i] = V1[op](d[i])
+    }
+    return r
+  }
 }
 
 function op2(t1: Tensor, op: string, t2: Tensor) {
@@ -99,21 +109,21 @@ export class Tensor {
   sign() { return op1(this, "sign"); }
   sqrt() { return op1(this, "sqrt"); }
   trunc() { return op1(this, "trunc"); }
+  random() { return op1(this, "random"); }
 
   // number = this.op()
-  min() { return op1n(this, "min"); }
-  max() { return op1n(this, "max"); }
-  any() { return op1n(this, "any"); }
-  all() { return op1n(this, "all"); }
-  sum() { return op1n(this, "sum"); }
-  product() { return op1n(this, "product"); }
-  norm() { return op1n(this, "norm"); }
-  norminf() { return op1n(this, "norminf"); }
-  mean() { return op1n(this, "mean"); }
-  sd() { return op1n(this, "sd"); }
-  random() { return op1n(this, "random"); }
-  normalize() { return op1n(this, "normalize"); }
-  normalize2() { return op1n(this, "normalize2"); }
+  min(axis?:number) { return op1n(this, "min", axis); }
+  max(axis?:number) { return op1n(this, "max", axis); }
+  any(axis?:number) { return op1n(this, "any", axis); }
+  all(axis?:number) { return op1n(this, "all", axis); }
+  sum(axis?:number) { return op1n(this, "sum", axis); }
+  product(axis?:number) { return op1n(this, "product", axis); }
+  norm(axis?:number) { return op1n(this, "norm", axis); }
+  norminf(axis?:number) { return op1n(this, "norminf", axis); }
+  mean(axis?:number) { return op1n(this, "mean", axis); }
+  sd(axis?:number) { return op1n(this, "sd", axis); }
+  normalize(axis?:number) { return op1n(this, "normalize", axis); }
+  normalize2(axis?:number) { return op1n(this, "normalize2", axis); }
 
   // number = this.op2(t2)
   near(t2: Tensor) { return op2n(this, "near", t2); }

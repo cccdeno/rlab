@@ -83,6 +83,27 @@ export function flatten(a: any) {
     return r
 }
 
+export function ndisti(shape:number[], v:number[], axis:number, si:number, r:number[][], idx:number[]) {
+    // console.log('idx=', idx)
+    if (idx.length == shape.length) {
+        r[idx[axis]].push(v[offset(shape, idx)])
+    }
+    for (let i=0; i<shape[si]; i++) {
+        idx.push(i)
+        ndisti(shape, v, axis, si+1, r, idx)
+        idx.pop()
+    }
+}
+
+export function ndist(shape:number[], v:number[], axis:number) {
+    let r = A.repeats(shape[axis], ()=>[])
+    let idx:number[] = []
+    ndisti(shape, v, axis, 0, r, idx)
+    console.log('r=', r)
+    return r
+}
+
+
 // ============== map/reduce ====================
 export function map1(a: any, f: (x: any) => any) {
     if (a instanceof Array) {

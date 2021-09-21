@@ -24,7 +24,7 @@ export function min(t1:Tensor, t2:Tensor) {
 export function tensor(a:any) {
     return Tensor.fromArray(a)
 }
-
+ 
 export function dot(t1:Tensor, t2:Tensor) {
     return t1.dot(t2)
 }
