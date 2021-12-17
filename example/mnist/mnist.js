@@ -30,130 +30,144 @@ async function loadData(path) {
 
 let [xTest, yTest] = await loadData('mnist_test.csv')
 console.log('yTest=', yTest)
-// let [xTrain, yTrain] = await loadData('mnist_train.csv')
-/*
-class NeuralNetwork:
-    function __init__(self, X, y, batch = 64, lr = 1e-3,  epochs = 5):
-        self.input = X 
-        self.target = y
-        self.batch = batch
-        self.epochs = epochs
-        self.lr = lr
-        
-        self.x = self.input[:self.batch] # batch input 
-        self.y = self.target[:self.batch] # batch target value
-        self.loss = []
-        self.acc = []
-        
-        self.init_weights()
-      
-    function init_weights(self):
-        self.W1 = np.random.randn(self.input.shape[1],256)
-        self.W2 = np.random.randn(self.W1.shape[1],128)
-        self.W3 = np.random.randn(self.W2.shape[1],self.y.shape[1])
 
-        self.b1 = np.random.randn(self.W1.shape[1],)
-        self.b2 = np.random.randn(self.W2.shape[1],)
-        self.b3 = np.random.randn(self.W3.shape[1],)
+class NeuralNetwork {
+    constructor(X, y, batch = 64, lr = 1e-3,  epochs = 5) {
+        this.input = X 
+        this.target = y
+        this.batch = batch
+        this.epochs = epochs
+        this.lr = lr
+        
+        this.x = this.input[:this.batch] // batch input 
+        this.y = this.target[:this.batch] // batch target value
+        this.loss = []
+        this.acc = []
+        
+        this.init_weights()
+    }
 
-    function ReLU(self, x):
+    init_weights() {
+        this.W1 = np.randn(this.input.shape[1],256)
+        this.W2 = np.randn(this.W1.shape[1],128)
+        this.W3 = np.randn(this.W2.shape[1],this.y.shape[1])
+
+        this.b1 = np.randn(this.W1.shape[1])
+        this.b2 = np.randn(this.W2.shape[1])
+        this.b3 = np.randn(this.W3.shape[1])
+    }
+
+    ReLU(x) {
         return np.maximum(0,x)
+    }
 
-    function dReLU(self,x):
+    dReLU(this,x) {
         return 1 * (x > 0) 
-    
-    function softmax(self, z):
+    }
+
+    softmax(this, z) {
         z = z - np.max(z, axis = 1).reshape(z.shape[0],1)
         return np.exp(z) / np.sum(np.exp(z), axis = 1).reshape(z.shape[0],1)
-    
-    function shuffle(self):
-        idx = [i for i in range(self.input.shape[0])]
-        np.random.shuffle(idx)
-        self.input = self.input[idx]
-        self.target = self.target[idx]
-        
-    function feedforward(self):
-        assert self.x.shape[1] == self.W1.shape[0]
-        self.z1 = self.x.dot(self.W1) + self.b1
-        self.a1 = self.ReLU(self.z1)
+    }
 
-        assert self.a1.shape[1] == self.W2.shape[0]
-        self.z2 = self.a1.dot(self.W2) + self.b2
-        self.a2 = self.ReLU(self.z2)
+    shuffle(this) {
+        idx = [i for i in range(this.input.shape[0])]
+        np.shuffle(idx)
+        this.input = this.input[idx]
+        this.target = this.target[idx]
+    }
 
-        assert self.a2.shape[1] == self.W3.shape[0]
-        self.z3 = self.a2.dot(self.W3) + self.b3
-        self.a3 = self.softmax(self.z3)
-        self.error = self.a3 - self.y
+    feedforward(this) {
+        assert this.x.shape[1] == this.W1.shape[0]
+        this.z1 = this.x.dot(this.W1) + this.b1
+        this.a1 = this.ReLU(this.z1)
 
+        assert this.a1.shape[1] == this.W2.shape[0]
+        this.z2 = this.a1.dot(this.W2) + this.b2
+        this.a2 = this.ReLU(this.z2)
+
+        assert this.a2.shape[1] == this.W3.shape[0]
+        this.z3 = this.a2.dot(this.W3) + this.b3
+        this.a3 = this.softmax(this.z3)
+        this.error = this.a3 - this.y
+    }
         
-    function backprop(self):
-        dcost = (1/self.batch)*self.error
+    backprop(this) {
+        dcost = (1/this.batch)*this.error
         
+        bp2 = np.dot((dcost),self.W3.T) * self.dReLU(self.z2)
+        bp1 = np.dot(bp2, self.W2.T)*self.dReLU(self.z1)
+
         DW3 = np.dot(dcost.T,self.a2).T
-        DW2 = np.dot((np.dot((dcost),self.W3.T) * self.dReLU(self.z2)).T,self.a1).T
-        DW1 = np.dot((np.dot(np.dot((dcost),self.W3.T)*self.dReLU(self.z2),self.W2.T)*self.dReLU(self.z1)).T,self.x).T
+        DW2 = np.dot(bp2.T,self.a1).T
+        DW1 = np.dot(bp1.T,self.x).T
 
         db3 = np.sum(dcost,axis = 0)
-        db2 = np.sum(np.dot((dcost),self.W3.T) * self.dReLU(self.z2),axis = 0)
-        db1 = np.sum((np.dot(np.dot((dcost),self.W3.T)*self.dReLU(self.z2),self.W2.T)*self.dReLU(self.z1)),axis = 0)
+        db2 = np.sum(bp2,axis = 0)
+        db1 = np.sum(bp1,axis = 0)
+ 
+        assert DW3.shape == this.W3.shape
+        assert DW2.shape == this.W2.shape
+        assert DW1.shape == this.W1.shape
         
-        assert DW3.shape == self.W3.shape
-        assert DW2.shape == self.W2.shape
-        assert DW1.shape == self.W1.shape
+        assert db3.shape == this.b3.shape
+        assert db2.shape == this.b2.shape
+        assert db1.shape == this.b1.shape 
         
-        assert db3.shape == self.b3.shape
-        assert db2.shape == self.b2.shape
-        assert db1.shape == self.b1.shape 
+        this.W3 = this.W3 - this.lr * DW3
+        this.W2 = this.W2 - this.lr * DW2
+        this.W1 = this.W1 - this.lr * DW1
         
-        self.W3 = self.W3 - self.lr * DW3
-        self.W2 = self.W2 - self.lr * DW2
-        self.W1 = self.W1 - self.lr * DW1
-        
-        self.b3 = self.b3 - self.lr * db3
-        self.b2 = self.b2 - self.lr * db2
-        self.b1 = self.b1 - self.lr * db1
+        this.b3 = this.b3 - this.lr * db3
+        this.b2 = this.b2 - this.lr * db2
+        this.b1 = this.b1 - this.lr * db1
+    }
 
-    function train(self):
-        for epoch in range(self.epochs):
+    train(this) {
+        for epoch in range(this.epochs):
             l = 0
             acc = 0
-            self.shuffle()
+            this.shuffle()
             print("epoch={}".format(epoch))
             
-            for batch in range(self.input.shape[0]//self.batch-1):
-                start = batch*self.batch
-                end = (batch+1)*self.batch
-                self.x = self.input[start:end]
-                self.y = self.target[start:end]
-                self.feedforward()
-                self.backprop()
-                l+=np.mean(self.error**2)
-                acc+= np.count_nonzero(np.argmax(self.a3,axis=1) == np.argmax(self.y,axis=1)) / self.batch
+            for batch in range(this.input.shape[0]//this.batch-1):
+                start = batch*this.batch
+                end = (batch+1)*this.batch
+                this.x = this.input[start:end]
+                this.y = this.target[start:end]
+                this.feedforward()
+                this.backprop()
+                l+=np.mean(this.error**2)
+                acc+= np.count_nonzero(np.argmax(this.a3,axis=1) == np.argmax(this.y,axis=1)) / this.batch
                 
-            self.loss.append(l/(self.input.shape[0]//self.batch))
-            self.acc.append(acc*100/(self.input.shape[0]//self.batch))
-            
-    function plot(self):
+            this.loss.append(l/(this.input.shape[0]//this.batch))
+            this.acc.append(acc*100/(this.input.shape[0]//this.batch))
+    }
+
+    plot(this) {
         plt.figure(dpi = 125)
-        plt.plot(self.loss)
+        plt.plot(this.loss)
         plt.xlabel("Epochs")
         plt.ylabel("Loss")
-    
-    function acc_plot(self):
+    }
+
+    acc_plot(this) {
         plt.figure(dpi = 125)
-        plt.plot(self.acc)
+        plt.plot(this.acc)
         plt.xlabel("Epochs")
         plt.ylabel("Accuracy")
-        
-    function test(self,xtest,ytest):
-        self.x = xtest
-        self.y = ytest
-        self.feedforward()
-        acc = np.count_nonzero(np.argmax(self.a3,axis=1) == np.argmax(self.y,axis=1)) / self.x.shape[0]
+    }
+
+    test(this,xtest,ytest) {
+        this.x = xtest
+        this.y = ytest
+        this.feedforward()
+        acc = np.count_nonzero(np.argmax(this.a3,axis=1) == np.argmax(this.y,axis=1)) / this.x.shape[0]
         print("Accuracy:", 100 * acc, "%")
-    
-        
+    }
+}
+
+/*
 print("start()")
 NN = NeuralNetwork(X_train, y_train) 
 print("train()")

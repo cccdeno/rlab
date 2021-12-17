@@ -4,6 +4,10 @@
 
 * https://github.com/maciejbalawejder/MLalgorithms-collection/blob/main/Neural%20Network/Image_Classifier.ipynb
 
+資料 mnist_test.csv, mnist_train.csv 需自以下網址下載
+
+* https://www.kaggle.com/scaomath/simple-mnist-numpy-from-scratch
+
 ```
 $ python mnist.py
 start()
@@ -21,7 +25,5 @@ Accuracy: 88.29 %
 
 * https://mlfromscratch.com/neural-network-tutorial/#/
     * https://github.com/casperbh96/Neural-Network-From-Scratch/
-
-* https://www.kaggle.com/scaomath/simple-mnist-numpy-from-scratch
 
 

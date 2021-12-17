@@ -154,7 +154,7 @@ export class Tensor {
 
   // matrix
   dot(t2:Tensor) {
-    V.eq(this.shape, t2.shape, `this.dot(t2) should have the same shape, but this=${this}, t2=${t2}`)
+    U.eq(this.shape, t2.shape, `this.dot(t2) should have the same shape, but this=${this}, t2=${t2}`)
     switch (this.dim()) {
       case 1:
         let v = V.dot(this.v, t2.v)
@@ -166,5 +166,10 @@ export class Tensor {
       default:
         throw Error(`dot do not support dim=${this.dim()}`)
     }
+  }
+
+  get T() {
+    U.be(this.dim() == 2)
+    return Tensor.fromArray(M.transpose(this.toArray()))
   }
 }

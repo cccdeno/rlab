@@ -1,6 +1,6 @@
 # rlab -- A TypeScript Package for Math like R
 
-The source code of math6 derived from the following projects
+The source code of rlab derived from the following projects
 
 1. jstat -- https://github.com/jstat/jstat
 2. numeric -- https://github.com/sloisel/numeric
