@@ -1,5 +1,6 @@
 import * as U from './util.ts'
-import * as A from './array.ts'
+// import * as A from './array.ts'
+import * as lib6 from '/lib6/mod.ts'
 import * as V from './vector.ts'
 import * as P from './probability.ts'
 
@@ -110,7 +111,8 @@ const EPSILON = 0.00000001
 export function hist(a:number[], from:number = Math.floor(V.min(a)), to:number=Math.ceil(V.max(a)), step:number = 1) {
   var n = Math.ceil((to - from + EPSILON) / step)
   var xc = U.range(from + step / 2.0, to, step)
-  var bins = A.array(n, 0)
+  // var bins = A.array(n, 0)
+  var bins = lib6.array(n, 0)
   let len = a.length
   for (let i=0; i<len; i++) {
     var slot = Math.floor((a[i] - from) / step)

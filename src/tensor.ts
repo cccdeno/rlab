@@ -1,6 +1,7 @@
 import * as ND from './ndarray.ts'
 import * as V from './vector.ts'
-import * as U from './util.ts'
+import * as L from '/lib6/mod.ts'
+import * as T from '/tdd/mod.ts'
 import * as M from './matrix.ts'
 
 function op1(t1: Tensor, op: string) {
@@ -29,14 +30,14 @@ function op1n(t1: Tensor, op: string, axis?:number) {
 
 function op2(t1: Tensor, op: string, t2: Tensor) {
   let V2 = V as { [index: string]: any }
-  U.be(V.eq(t1.shape, t2.shape))
+  L.ok(V.eq(t1.shape, t2.shape))
   let rv = V2[op](t1.v, t2.v)
   return new Tensor(t1.shape, rv)
 }
 
 function op2n(t1: Tensor, op: string, t2: Tensor) {
   let V2 = V as { [index: string]: any }
-  U.be(V.eq(t1.shape, t2.shape))
+  L.ok(V.eq(t1.shape, t2.shape))
   let r = V2[op](t1.v, t2.v)
   return r
 }
@@ -53,11 +54,11 @@ export class Tensor {
   dim() { return ND.dim(this.shape) }
 
   map1(f: (a: any) => any) {
-    return new Tensor(this.shape, U.map1(this.v, f))
+    return new Tensor(this.shape, L.map1(this.v, f))
   }
 
   map2(t2: Tensor, f: (a: any, b: any) => any) {
-    return new Tensor(this.shape, U.map2(this.v, t2.v, f))
+    return new Tensor(this.shape, L.map2(this.v, t2.v, f))
   }
   // vector = this.op(t2)
   add(t2: Tensor) { return op2(this, "add", t2); }
@@ -154,7 +155,7 @@ export class Tensor {
 
   // matrix
   dot(t2:Tensor) {
-    U.eq(this.shape, t2.shape, `this.dot(t2) should have the same shape, but this=${this}, t2=${t2}`)
+    T.eq(this.shape, t2.shape, `this.dot(t2) should have the same shape, but this=${this}, t2=${t2}`)
     switch (this.dim()) {
       case 1:
         let v = V.dot(this.v, t2.v)
@@ -169,7 +170,7 @@ export class Tensor {
   }
 
   get T() {
-    U.be(this.dim() == 2)
+    L.ok(this.dim() == 2)
     return Tensor.fromArray(M.transpose(this.toArray()))
   }
 }

@@ -1,4 +1,5 @@
-import * as U from "./util.ts"
+// import * as U from "./util.ts"
+import * as L from "/lib6/mod.ts"
 import * as V from "./vector.ts"
 import * as M from "./matrix.ts"
 
@@ -6,7 +7,7 @@ const step = 0.01
 
 // n 次微分 : 參考 https://en.wikipedia.org/wiki/Finite_difference
 export function diffn(f: (x: number) => number, n: number, x: number, h: number = step):number {
-    U.be(n >= 0)
+    L.be(n >= 0)
     if (n === 0) return f(x)
     h = h / 2 // 讓 1, 2, .... n 次微分的最大距離都一樣
     return (diffn(f, n - 1, x + h) - diffn(f, n - 1, x - h)) / (2 * h)
@@ -121,7 +122,7 @@ export function theoremDivGradEqLaplace(f:(x:number[])=>number, v: number[]) {
     let divGrad = divergence(grad(f, v), v)
     let laplace = laplaceOperator(f, v)
     console.log('div(grad(f,v))=', divGrad, ' laplace=', laplace)
-    U.near(divGrad, laplace)
+    L.near(divGrad, laplace)
 }
 
 // 定理：梯度的旋度 = 零

@@ -1,4 +1,5 @@
-import * as U from './util.ts'
+// import * as U from './util.ts'
+import * as L from '/lib6/mod.ts'
 
 export function vector(n:number, value:number=0):number[] {
   let a = new Array(n)
@@ -198,7 +199,7 @@ export const sd = function (a:number[]) {
 export const random = function (r:number[], min:number=0, max:number=1) {
   let len = r.length
   for (let i=0; i<len; i++) {
-    r[i] = U.random(min, max)
+    r[i] = L.random(min, max)
   }
 }
 

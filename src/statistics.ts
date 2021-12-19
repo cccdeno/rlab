@@ -1,11 +1,12 @@
-import * as U from './util.ts'
-import * as A from './array.ts'
+// import * as U from './util.ts'
+import * as L from '/lib6/mod.ts'
+// import * as A from './array.ts'
 import * as V from './vector.ts'
-import * as D from './distribution.ts'
+// import * as D from './distribution.ts'
 
 export function probChoose(x: any[], prob: number[]) {
   let xlen = x.length
-  let p = U.random()
+  let p = L.random()
   let psum = 0
   for (var pi = 0; pi < xlen; pi++) {
     psum += prob[pi]
@@ -35,7 +36,7 @@ const EPSILON = 0.00000001
 
 export function histogram(a: number[], from: number = Math.floor(V.min(a)), to: number = Math.ceil(V.max(a)), step: number = 1) {
   var n = Math.ceil((to - from + EPSILON) / step)
-  var xc = U.range(from + step / 2.0, to, step)
+  var xc = L.range(from + step / 2.0, to, step)
   // var n = xc.length
   var bins = V.vector(n, 0)
   let len = a.length

@@ -1,4 +1,5 @@
-import * as A from './array.ts'
+// import * as A from './array.ts'
+import * as L from '/lib6/mod.ts'
 import * as V from './vector.ts'
 
 export function dim(shape: number[]) {
@@ -49,7 +50,7 @@ export function toArray(shape:number[], v:any[]) {
 
 export function ndarray(shape:number[], v?:any) {
     let len = size(shape)
-    if (v == null) v = A.array(len)
+    if (v == null) v = L.array(len)
     return toArray(shape, v)
 }
 
@@ -96,7 +97,7 @@ function collecti(shape:number[], v:number[], axis:number, si:number, r:number[]
 }
 
 export function collect(shape:number[], v:number[], axis:number) {
-    let r = A.repeats(shape[axis], ()=>[])
+    let r = L.repeats(shape[axis], ()=>[])
     let idx:number[] = []
     collecti(shape, v, axis, 0, r, idx)
     // console.log('r=', r)
@@ -122,11 +123,12 @@ function collapsei(shape:number[], v:number[], axis:number, si:number, r:number[
 export function collapse(shape:number[], v:number[], axis:number) {
     let cshape = shape.slice(0)
     cshape.splice(axis, 1)
-    let r = A.repeats(size(cshape), ()=>[])
+    let r = L.repeats(size(cshape), ()=>[])
     let idx:number[] = []
     collapsei(shape, v, axis, 0, r, idx)
     return r
 }
+/*
 // ============== map/reduce ====================
 export function map1(a: any, f: (x: any) => any) {
     if (a instanceof Array) {
@@ -170,3 +172,4 @@ export function reduce(a: any, f: any, init: (x: any) => any) {
 export function toNumber(a:any) {
     return map1(a, (o)=>parseFloat(o))
 }
+*/

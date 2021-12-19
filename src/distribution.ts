@@ -1,7 +1,7 @@
-import * as U from './util.ts'
+import * as L from '/lib6/mod.ts'
 import * as V from './vector.ts'
 import * as P from './probfunc.ts'
-const { isInt } = U
+const { isInt } = L
 
 const { log, pow, sqrt, PI, tan, atan, min, exp } = Math
 
@@ -14,7 +14,7 @@ abstract class Distribution {
         let p = Math.random()
         return this.inv(p, ...args)
     }
-    inv(...args: any[]):number { // { let p = args[0]; U.be(p >= 0 && p <= 1) }
+    inv(...args: any[]):number { // { let p = args[0]; L.be(p >= 0 && p <= 1) }
         throw Error(`inv() not implemented!`)
     }
     mean(...args: any[]): number {
@@ -343,7 +343,7 @@ export class NegBinomial extends Distribution {
 
 export class Poisson extends Distribution {
     pdf(x: number, lambda: number) {
-        U.be(isInt(x))
+        L.be(isInt(x))
         if (lambda < 0 || (x % 1) !== 0 || x < 0) return 0
         return pow(lambda, x) * exp(-lambda) / P.factorial(x)
     }

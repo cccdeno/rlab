@@ -1,4 +1,5 @@
-import * as U from './util.ts'
+// import * as U from './util.ts'
+import * as L from '/lib6/mod.ts'
 import * as V from './vector.ts'
 
 export function matrix(rows: number, cols: number) {
@@ -94,7 +95,7 @@ export function conv(k:number[][], m:number[][]){
 // =========================== long function =============================
 export function inv(m0: number[][]) {
   let m = m0.length, n = m0[0].length, abs = Math.abs
-  let A = U.clone(m0), Ai, Aj
+  let A = L.clone(m0), Ai, Aj
   let I = identity(m), Ii, Ij
   let i, j, k, x, i0, v0
   for (j = 0; j < n; ++j) {
@@ -126,7 +127,7 @@ export function inv(m0: number[][]) {
 export function det(x: number[][]) {
   let abs = Math.abs
   if (x.length !== x[0].length) { throw new Error('numeric: det() only works on square matrices') }
-  let n = x.length, ret = 1, i, j, k, A = U.clone(x), Aj, Ai, alpha, temp, k1
+  let n = x.length, ret = 1, i, j, k, A = L.clone(x), Aj, Ai, alpha, temp, k1
   for (j = 0; j < n - 1; j++) {
     k = j
     for (i = j + 1; i < n; i++) { if (abs(A[i][j]) > abs(A[k][j])) { k = i } }
@@ -158,7 +159,7 @@ export function lu(A: number[][]) {
   var max
   var n = A.length, n1 = n - 1
   var P = new Array(n)
-  A = U.clone(A)
+  A = L.clone(A)
 
   for (k = 0; k < n; ++k) {
     Pk = k
@@ -203,7 +204,7 @@ export function luSolve(LUP: any, b: number[]) {
   var i, j;
   var LU = LUP.LU;
   var n = LU.length;
-  var x: number[] = U.clone(b);
+  var x: number[] = L.clone(b);
   var P = LUP.P;
   var Pi, LUi, LUii, tmp;
 
@@ -251,7 +252,7 @@ export function svd(A: number[][]) {
   var k = 0;
   var l = 0;
 
-  var u = U.clone(A);
+  var u = L.clone(A);
   var m = u.length;
 
   var n = u[0].length;
